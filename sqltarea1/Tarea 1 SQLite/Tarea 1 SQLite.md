@@ -2,11 +2,11 @@
 
 Tarea 1 SQLite:
 
-Creación de la tabla Ejemplo, inserción de 50 entradas y consulta final de dichas entradas:![](Aspose.Words.79661e61-e16f-4da7-b939-26c888e58e3a.001.png)
+Creación de la tabla Ejemplo, inserción de 50 entradas y consulta final de dichas entradas:
+
+![](Aspose.Words.79661e61-e16f-4da7-b939-26c888e58e3a.001.png)
 
 ![](Aspose.Words.79661e61-e16f-4da7-b939-26c888e58e3a.002.jpeg)
-
-![](Aspose.Words.79661e61-e16f-4da7-b939-26c888e58e3a.003.png)
 
 ![](Aspose.Words.79661e61-e16f-4da7-b939-26c888e58e3a.004.png)
 
