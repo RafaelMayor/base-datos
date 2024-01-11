@@ -132,3 +132,36 @@ SELECT * FROM Propietarios where dni = "12345678A";
 ```sql
 SELECT * FROM Vehiculos where id_propietario = 5;
 ```
+
+Paso 4: Realizar updates.
+
+
+- Actualizar el nombre de un propietario con DNI "12345678A".
+
+```sql
+update Propietarios set nombre = "Manolo" where dni = "12345678A";
+```
+
+- Modificar el año de un vehículo con ID 3 a 2022.
+
+```sql
+update Vehiculos set anio = 2022 where id = 3;
+```
+
+- Cambiar el modelo de todos los vehículos Nissan a "Micra".
+
+```sql
+update Vehiculos set modelo = "Micra" where marca = "Nissan";
+```
+
+- Actualizar el apellido de un propietario con ID 7 a "Gomez".
+
+```sql
+update Propietarios set apellido = "Gomez" where id = 7;
+```
+
+- Modificar la marca de un vehículo con modelo "Fiesta" a "Renault".
+
+```sql
+update Vehiculos set marca = "Renault" where modelo = "Fiesta";
+```
