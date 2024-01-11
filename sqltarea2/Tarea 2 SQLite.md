@@ -4,39 +4,40 @@ Rafael Martín Mayor.
 
 Paso 1: Crear una tabla con un campo de cada tipo.
 
+ - Abrir SQLite:
+
 ```sql
-daw@a103pc01:~$ sqlite3 tarea2.db
+sqlite3 tarea2.db
+```
 
-sqlite> CREATE TABLE Propietarios (
-   ...> id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-   ...> nombre TEXT NOT NULL,
-   ...> apellido TEXT NOT NULL,
-   ...> dni TEXT UNIQUE );
-sqlite> CREATE TABLE Vehiculos (
-   ...> id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-   ...> marca TEXT NOT NULL,
-   ...> modelo TEXT NOT NULL,
-   ...> anio INTEGER NOT NULL,
-   ...> id_propietario INTEGER references propietarios(id_propietario));
-sqlite> INSERT INTO Propietarios ( nombre, apellido, dni )
-   ...> VALUES ( 'Juan', 'Perez', '12345678A' );
-sqlite> INSERT INTO Propietarios ( nombre, apellido, dni )
-   ...> VALUES ( 'Maria', 'Lopez', '87654321B' );
-sqlite> INSERT INTO Propietarios ( nombre, apellido, dni )
-   ...> VALUES ( 'Carlos', 'Ruiz', '11111111C' );
-sqlite> INSERT INTO Propietarios ( nombre, apellido, dni )
-   ...> VALUES ( 'Laura', 'Gomez', '22222222D' );
-sqlite> INSERT INTO Propietarios ( nombre, apellido, dni )
-   ...> VALUES ( 'Pedro', 'Martinez', '33333333E' );
-sqlite> INSERT INTO Propietarios ( nombre, apellido, dni )
-   ...> VALUES ( 'Ana', 'Fernandez', '44444444F' );
-sqlite> INSERT INTO Propietarios ( nombre, apellido, dni )
-   ...> VALUES ( 'Diego', 'Sanchez', '55555555G' );
-sqlite> INSERT INTO Propietarios ( nombre, apellido, dni )
-   ...> VALUES ( 'Sofia', 'Torres', '66666666H' );
-sqlite> INSERT INTO Propietarios ( nombre, apellido, dni )
-   ...> VALUES ( 'Javier', 'Leon', '77777777I' );
+- Crear una tabla Propietarios y otra tabla Vehiculos:
 
+```sql
+CREATE TABLE Propietarios (
+id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+nombre TEXT NOT NULL,
+apellido TEXT NOT NULL,
+dni TEXT UNIQUE );
+CREATE TABLE Vehiculos (
+id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+marca TEXT NOT NULL,
+modelo TEXT NOT NULL,
+anio INTEGER NOT NULL,
+id_propietario INTEGER references propietarios(id_propietario));
+```
+
+- Insertar 20 entradas para las tablas Propietarios y Vehiculos:
+
+```sql
+insert into propietarios (nombre, apellido, dni) values ('Juan', 'Perez', '12345678A');
+insert into propietarios (nombre, apellido, dni) values ('Maria', 'Lopez', '87654321B');
+insert into propietarios (nombre, apellido, dni) values ('Carlos', 'Ruiz', '11111111C');
+insert into propietarios (nombre, apellido, dni) values ('Laura', 'Gomez', '22222222D');
+insert into propietarios (nombre, apellido, dni) values ('Pedro', 'Martinez', '33333333E');
+insert into propietarios (nombre, apellido, dni) values ('Ana', 'Fernandez', '44444444F');
+insert into propietarios (nombre, apellido, dni) values ('Diego', 'Sanchez', '55555555G');
+insert into propietarios (nombre, apellido, dni) values ('Sofia', 'Torrez', '66666666H');
+insert into propietarios (nombre, apellido, dni) values ('Javier', 'Leon', '77777777I');
 insert into propietarios (nombre, apellido, dni) values ('Lucia', 'Castillo', '88888888J');
 insert into propietarios (nombre, apellido, dni) values ('Luis', 'Gonzalez', '99999999K');
 insert into propietarios (nombre, apellido, dni) values ('Marta', 'Diaz', '10101010L');
@@ -48,6 +49,24 @@ insert into propietarios (nombre, apellido, dni) values ('Fernando', 'Herrera', 
 insert into propietarios (nombre, apellido, dni) values ('Clara', 'Soto', '16161616R');
 insert into propietarios (nombre, apellido, dni) values ('Sergio', 'Mendoza', '17171717S');
 insert into propietarios (nombre, apellido, dni) values ('Patricia', 'Navarro', '18181818T');
-sqlite> INSERT INTO Vehiculos ( marca, modelo, anio )
-   ...> VALUES ( 'Ford', 'Fiesta', '2019' );
+insert into vehiculos (marca, modelo, anio, id_propietario) values ('Ford', 'Fiesta', '2019', '1');
+insert into vehiculos (marca, modelo, anio, id_propietario) values ('Toyota', 'Corolla', '2018', '2');
+insert into vehiculos (marca, modelo, anio, id_propietario) values ('Nissan', 'Sentra', '2020', '3');
+insert into vehiculos (marca, modelo, anio, id_propietario) values ('Chevrolet', 'Spark', '2017', '4');
+insert into vehiculos (marca, modelo, anio, id_propietario) values ('Honda', 'Civic', '2016', '5');
+insert into vehiculos (marca, modelo, anio, id_propietario) values ('Ford', 'Mustang', '2021', '6');
+insert into vehiculos (marca, modelo, anio, id_propietario) values ('Toyota', 'RAV4', '2019', '7');
+insert into vehiculos (marca, modelo, anio, id_propietario) values ('Volkswagen', 'Golf', '2020', '8');
+insert into vehiculos (marca, modelo, anio, id_propietario) values ('Honda', 'CR-V', '2018', '9');
+insert into vehiculos (marca, modelo, anio, id_propietario) values ('Nissan', 'Altima', '2017', '10');
+insert into vehiculos (marca, modelo, anio, id_propietario) values ('Chevrolet', 'Malibu', '2019', '11');
+insert into vehiculos (marca, modelo, anio, id_propietario) values ('Toyota', 'Camry', '2020', '12');
+insert into vehiculos (marca, modelo, anio, id_propietario) values ('Honda', 'Accord', '2018', '13');
+insert into vehiculos (marca, modelo, anio, id_propietario) values ('Ford', 'Explorer', '2021', '14');
+insert into vehiculos (marca, modelo, anio, id_propietario) values ('Nissan', 'Rogue', '2017', '15');
+insert into vehiculos (marca, modelo, anio, id_propietario) values ('Volkswagen', 'Jetta', '2019', '16');
+insert into vehiculos (marca, modelo, anio, id_propietario) values ('Chevrolet', 'Equinox', '2018', '17');
+insert into vehiculos (marca, modelo, anio, id_propietario) values ('Toyota', 'Highlander', '2020', '18');
+insert into vehiculos (marca, modelo, anio, id_propietario) values ('Honda', 'Odyssey', '2016', '19');
+insert into vehiculos (marca, modelo, anio, id_propietario) values ('Nissan', 'Murano', '2019', '20');
 ```
