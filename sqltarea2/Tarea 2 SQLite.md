@@ -74,42 +74,61 @@ insert into vehiculos (marca, modelo, anio, id_propietario) values ('Nissan', 'M
 Paso 3: Realizar consultas de datos.
 
 - Seleccionar todos los propietarios
+
 ```sql
 SELECT * FROM Propietarios;
 ```
+
 - Listar todos los vehículos.
+
 ```sql
 SELECT * FROM Vehiculos;
 ```
+
 - Seleccionar solo los nombres y apellidos de los propietarios.
+
 ```sql
 SELECT nombre, apellido FROM Propietarios;
 ```
+
 - Listar todas las marcas y modelos de los vehículos.
+
 ```sql
 SELECT marca, modelo FROM Vehiculos;
 ```
+
 - Seleccionar solo los propietarios con apellido "Perez".
+
 ```sql
 SELECT * FROM Propietarios where apellido = "Perez";
 ```
+
 - Listar todos los vehículos con año 2019.
+
 ```sql
 SELECT * FROM Vehiculos where anio = 2019;
 ```
+
 - Seleccionar propietarios que tienen vehículos de la marca "Toyota".
+
 ```sql
 SELECT v.* FROM Vehiculos as v, Propietarios as p where p.id = v.id_propietario and v. marca = "Toyota";
 ```
+
 - Listar vehículos con marca "Ford" y modelo "Fiesta".
+
 ```sql
 SELECT * FROM Vehiculos where marca = "Ford" and modelo = "Fiesta";
 ```
+
 - Seleccionar propietarios con DNI "12345678A".
+
 ```sql
 SELECT * FROM Propietarios where dni = "12345678A";
 ```
+
 - Listar vehículos que pertenecen al propietario con ID 5.
+
 ```sql
 SELECT * FROM Vehiculos where id_propietario = 5;
 ```
