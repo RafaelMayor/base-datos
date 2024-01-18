@@ -88,6 +88,7 @@ Haciendo un .read del fichero sql, de nombre supermercado-db.sql, realiza la cre
 - Indica si la BBDD esta __normalizada__ hasta la 3ª forma normal, justificando la respuesta.
 
 ### **Paso 4: Responde a las siguientes cuestiones.**
+
 Realiza las siguientes consultas, y muestra el resultado obtenido:
 
 - Mostrar todos los productos de la categoría "Bebidas".
