@@ -88,35 +88,205 @@ Haciendo un .read del fichero sql, de nombre supermercado-db.sql, realiza la cre
 - Indica si la BBDD esta __normalizada__ hasta la 3ª forma normal, justificando la respuesta.
 
 ### **Paso 4: Responde a las siguientes cuestiones.**
+Realiza las siguientes consultas, y muestra el resultado obtenido:
+
 - Mostrar todos los productos de la categoría "Bebidas".
+
+```sql
+SELECT * FROM productos WHERE categoria = 'Bebidas';
+```
+
 - Listar los productos ordenados por precio de forma descendente.
+
+```sql
+SELECT * FROM productos ORDER BY precio DESC;
+```
+
 - Calcular el precio total de todos los productos en la tabla "productos".
+
+```sql
+SELECT SUM(precio) FROM productos;
+```
+
 - Encontrar los productos con un nombre que contenga la letra 'a'.
+
+```sql
+SELECT * FROM productos WHERE nombre LIKE '%a%';
+```
+
+
 - Obtener la cantidad total de productos vendidos en todas las fechas.
+
+```sql
+SELECT SUM(cantidad) FROM ventas;
+```
+
+
 - Encontrar el producto más caro en cada categoría.
+
+```sql
+SELECT categoria, nombre, precio FROM productos WHERE (categoria, precio) IN (SELECT categoria, MAX(precio) FROM productos GROUP BY categoria);
+```
+
+
 - Listar los productos que no han sido vendidos.
+
+```sql
+SELECT * FROM productos WHERE id NOT IN (SELECT producto_id FROM ventas);
+```
+
+
 - Calcular el precio promedio de los productos en la categoría "Snacks".
+
+```sql
+SELECT AVG(precio) FROM productos WHERE categoria = 'Snacks';
+```
+
+
 - Encontrar los productos que han sido vendidos más de 5 veces.
+
+```sql
+SELECT productos.nombre, SUM(ventas.cantidad) AS total_ventas FROM productos INNER JOIN ventas ON productos.id = ventas.producto_id GROUP BY productos.id HAVING SUM(ventas.cantidad) > 5;
+```
+
+
 - Mostrar la fecha y la cantidad de ventas para cada producto.
+
+```sql
+SELECT fecha, SUM(cantidad) FROM ventas GROUP BY producto_id, fecha;
+```
+
+
 - Encontrar los productos que tienen un precio menor o igual a 2.
+
+```sql
+SELECT * FROM productos WHERE precio <= 2;
+```
+
+
 - Calcular la cantidad total de ventas para cada fecha.
+
+```sql
+SELECT fecha, SUM(cantidad) FROM ventas GROUP BY fecha;
+```
+
+
 - Listar los productos cuyo nombre comienza con la letra 'P'.
+
+```sql
+SELECT * FROM productos WHERE nombre LIKE 'P%';
+```
+
+
 - Obtener el producto más vendido en términos de cantidad.
+
+```sql
+SELECT productos.nombre, SUM(ventas.cantidad) AS total_ventas FROM productos INNER JOIN ventas ON productos.id = ventas.producto_id GROUP BY productos.id ORDER BY total_ventas DESC LIMIT 1;
+```
+
+
 - Mostrar los productos que fueron vendidos en la fecha '__2024-01-18__'.
+
+```sql
+SELECT productos.nombre, ventas.cantidad FROM productos INNER JOIN ventas ON productos.id = ventas.producto_id WHERE ventas.fecha = '2024-01-18';
+```
+
+
 - Calcular el total de ventas para cada producto.
+
+```sql
+SELECT productos.nombre, SUM(ventas.cantidad) FROM productos INNER JOIN ventas ON productos.id = ventas.producto_id GROUP BY productos.id;
+```
+
+
 - Encontrar los productos con un precio entre 3 y 4.
+
+```sql
+SELECT * FROM productos WHERE precio BETWEEN 3 AND 4;
+```
+
+
 - Listar los productos y sus categorías ordenados alfabéticamente por categoría.
+
+```sql
+SELECT * FROM productos ORDER BY categoria ASC;
+```
+
+
 - Calcular el precio total de los productos vendidos en la fecha '2024-01-19'.
+
+```sql
+SELECT SUM(productos.precio * ventas.cantidad) FROM productos INNER JOIN ventas ON productos.id = ventas.producto_id WHERE ventas.fecha = '2024-01-19';
+```
+
+
 - Mostrar los productos que no pertenecen a la categoría "__Higiene__".
+
+```sql
+SELECT * FROM productos WHERE categoria != 'Higiene';
+```
+
+
 - Encontrar la cantidad total de productos en cada categoría.
+
+```sql
+SELECT categoria, SUM(id) FROM productos GROUP BY categoria;
+```
+
+
 - Listar los productos que tienen un precio igual a la media de precios.
+
+```sql
+SELECT * FROM productos WHERE precio = (SELECT AVG(precio) FROM productos);
+```
+
+
 - Calcular el precio total de los productos vendidos en cada fecha.
+
+```sql
+SELECT fecha, SUM(productos.precio * ventas.cantidad) FROM productos INNER JOIN ventas ON productos.id = ventas.producto_id GROUP BY fecha;
+```
+
+
 - Mostrar los productos con un nombre que termina con la letra 'o'.
+
+```sql
+SELECT * FROM productos WHERE nombre LIKE '%o';
+```
+
+
 - Encontrar los productos que han sido vendidos en más de una fecha.
+
+```sql
+SELECT productos.nombre FROM productos INNER JOIN ventas ON productos.id = ventas.producto_id GROUP BY productos.id HAVING COUNT(DISTINCT ventas.fecha) > 1;
+```
+
+
 - Listar los productos cuya categoría comienza con la letra 'L'.
+
+```sql
+SELECT * FROM productos WHERE categoria LIKE 'L%';
+```
+
+
 - Calcular el total de ventas para cada producto en la fecha '2024-01-17'.
+
+```sql
+SELECT productos.nombre, SUM(ventas.cantidad) AS total_ventas FROM productos INNER JOIN ventas ON productos.id = ventas.producto_id WHERE ventas.fecha = '2024-01-17' GROUP BY productos.id;
+```
+
+
 - Mostrar los productos cuyo nombre tiene al menos 5 caracteres.
+
+```sql
+SELECT * FROM productos WHERE LENGTH(nombre) >= 5;
+```
+
+
 - Encontrar los productos que tienen un precio superior al precio máximo en la tabla "__productos__".
 
+```sql
+SELECT * FROM productos WHERE precio > (SELECT MAX(precio) FROM productos);
+```
 
 </div>
