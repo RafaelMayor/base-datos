@@ -530,6 +530,15 @@ SELECT fecha, SUM(productos.precio * ventas.cantidad) AS total_productos_vendido
 
 ```sql
 SELECT * FROM productos WHERE nombre LIKE '%o';
+
+┌────┬─────────────────┬───────────┬────────┐
+│ id │     nombre      │ categoria │ precio │
+├────┼─────────────────┼───────────┼────────┤
+│ 5  │ Pollo           │ Carnes    │ 5.5    │
+│ 9  │ Queso           │ Lácteos   │ 4.0    │
+│ 11 │ Papel Higiénico │ Hogar     │ 1.5    │
+│ 18 │ Jabón de Baño   │ Higiene   │ 1.2    │
+└────┴─────────────────┴───────────┴────────┘
 ```
 
 
@@ -538,19 +547,38 @@ SELECT * FROM productos WHERE nombre LIKE '%o';
 ```sql
 SELECT productos.nombre FROM productos INNER JOIN ventas ON productos.id = ventas.id_producto GROUP BY productos.id HAVING COUNT(DISTINCT ventas.fecha) > 1;
 ```
-
+> No devuelve nada porque no hay ningún producto que haya sido vendido en más de una fecha.
 
 - Listar los productos cuya categoría comienza con la letra 'L'.
 
 ```sql
 SELECT * FROM productos WHERE categoria LIKE 'L%';
+
+┌────┬────────────┬───────────┬────────┐
+│ id │   nombre   │ categoria │ precio │
+├────┼────────────┼───────────┼────────┤
+│ 2  │ Leche      │ Lácteos   │ 1.8    │
+│ 6  │ Huevos     │ Lácteos   │ 1.0    │
+│ 7  │ Yogurt     │ Lácteos   │ 2.0    │
+│ 9  │ Queso      │ Lácteos   │ 4.0    │
+│ 13 │ Detergente │ Limpieza  │ 2.8    │
+└────┴────────────┴───────────┴────────┘
 ```
 
 
 - Calcular el total de ventas para cada producto en la fecha '2024-01-17'.
 
 ```sql
-SELECT productos.nombre, SUM(ventas.cantidad) AS total_ventas FROM productos INNER JOIN ventas ON productos.id = ventas.id_producto WHERE ventas.fecha = '2024-01-17' GROUP BY productos.id;
+SELECT ventas.fecha, productos.nombre, SUM(ventas.cantidad) AS total_ventas FROM productos INNER JOIN ventas ON productos.id = ventas.id_producto WHERE ventas.fecha = '2024-01-17' GROUP BY productos.id;
+
+┌────────────┬──────────┬──────────────┐
+│   fecha    │  nombre  │ total_ventas │
+├────────────┼──────────┼──────────────┤
+│ 2024-01-17 │ Arroz    │ 5            │
+│ 2024-01-17 │ Leche    │ 3            │
+│ 2024-01-17 │ Manzanas │ 2            │
+│ 2024-01-17 │ Pollo    │ 1            │
+└────────────┴──────────┴──────────────┘
 ```
 
 
@@ -558,6 +586,29 @@ SELECT productos.nombre, SUM(ventas.cantidad) AS total_ventas FROM productos INN
 
 ```sql
 SELECT * FROM productos WHERE LENGTH(nombre) >= 5;
+
+┌────┬────────────────────┬───────────┬────────┐
+│ id │       nombre       │ categoria │ precio │
+├────┼────────────────────┼───────────┼────────┤
+│ 1  │ Arroz              │ Alimentos │ 2.5    │
+│ 2  │ Leche              │ Lácteos   │ 1.8    │
+│ 4  │ Manzanas           │ Frutas    │ 3.0    │
+│ 5  │ Pollo              │ Carnes    │ 5.5    │
+│ 6  │ Huevos             │ Lácteos   │ 1.0    │
+│ 7  │ Yogurt             │ Lácteos   │ 2.0    │
+│ 8  │ Tomates            │ Verduras  │ 2.2    │
+│ 9  │ Queso              │ Lácteos   │ 4.0    │
+│ 10 │ Cereal             │ Desayuno  │ 3.5    │
+│ 11 │ Papel Higiénico    │ Hogar     │ 1.5    │
+│ 12 │ Cepillo de Dientes │ Higiene   │ 2.0    │
+│ 13 │ Detergente         │ Limpieza  │ 2.8    │
+│ 14 │ Galletas           │ Snacks    │ 1.7    │
+│ 15 │ Aceite de Oliva    │ Cocina    │ 4.5    │
+│ 17 │ Sopa enlatada      │ Conservas │ 2.3    │
+│ 18 │ Jabón de Baño      │ Higiene   │ 1.2    │
+│ 19 │ Botellas de Agua   │ Bebidas   │ 1.0    │
+│ 20 │ Cerveza            │ Bebidas   │ 3.8    │
+└────┴────────────────────┴───────────┴────────┘
 ```
 
 
@@ -566,5 +617,7 @@ SELECT * FROM productos WHERE LENGTH(nombre) >= 5;
 ```sql
 SELECT * FROM productos WHERE precio > (SELECT MAX(precio) FROM productos);
 ```
+
+> No devuelve nada porque no hay ningún producto que tenga un precio superior al precio máximo.
 
 </div>
