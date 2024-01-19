@@ -215,28 +215,72 @@ SELECT categoria, nombre, precio FROM productos WHERE (categoria, precio) IN (SE
 - Listar los productos que no han sido vendidos.
 
 ```sql
-SELECT * FROM productos WHERE id NOT IN (SELECT producto_id FROM ventas);
+SELECT * FROM productos WHERE id NOT IN (SELECT id_producto FROM ventas);
+
+┌────┬────────────────────┬───────────┬────────┐
+│ id │       nombre       │ categoria │ precio │
+├────┼────────────────────┼───────────┼────────┤
+│ 3  │ Pan                │ Panadería │ 1.2    │
+│ 7  │ Yogurt             │ Lácteos   │ 2.0    │
+│ 9  │ Queso              │ Lácteos   │ 4.0    │
+│ 11 │ Papel Higiénico    │ Hogar     │ 1.5    │
+│ 12 │ Cepillo de Dientes │ Higiene   │ 2.0    │
+│ 13 │ Detergente         │ Limpieza  │ 2.8    │
+│ 15 │ Aceite de Oliva    │ Cocina    │ 4.5    │
+│ 17 │ Sopa enlatada      │ Conservas │ 2.3    │
+│ 19 │ Botellas de Agua   │ Bebidas   │ 1.0    │
+│ 20 │ Cerveza            │ Bebidas   │ 3.8    │
+└────┴────────────────────┴───────────┴────────┘
 ```
 
 
 - Calcular el precio promedio de los productos en la categoría "Snacks".
 
 ```sql
-SELECT AVG(precio) FROM productos WHERE categoria = 'Snacks';
+SELECT AVG(precio) AS precio_promedio FROM productos WHERE categoria = 'Snacks';
+
+┌─────────────────┐
+│ precio_promedio │
+├─────────────────┤
+│ 1.7             │
+└─────────────────┘
 ```
 
 
 - Encontrar los productos que han sido vendidos más de 5 veces.
 
 ```sql
-SELECT productos.nombre, SUM(ventas.cantidad) AS total_ventas FROM productos INNER JOIN ventas ON productos.id = ventas.producto_id GROUP BY productos.id HAVING SUM(ventas.cantidad) > 5;
+SELECT productos.nombre, SUM(ventas.cantidad) AS total_ventas FROM productos INNER JOIN ventas ON productos.id = ventas.id_producto GROUP BY productos.id HAVING SUM(ventas.cantidad) > 5;
+
+┌───────────────┬──────────────┐
+│    nombre     │ total_ventas │
+├───────────────┼──────────────┤
+│ Huevos        │ 10           │
+│ Galletas      │ 7            │
+│ Jabón de Baño │ 6            │
+└───────────────┴──────────────┘
 ```
 
 
 - Mostrar la fecha y la cantidad de ventas para cada producto.
 
 ```sql
-SELECT fecha, SUM(cantidad) FROM ventas GROUP BY producto_id, fecha;
+SELECT fecha, SUM(cantidad) AS cantidad_ventas FROM ventas GROUP BY id_producto, fecha;
+
+┌────────────┬─────────────────┐
+│   fecha    │ cantidad_ventas │
+├────────────┼─────────────────┤
+│ 2024-01-17 │ 5               │
+│ 2024-01-17 │ 3               │
+│ 2024-01-17 │ 2               │
+│ 2024-01-17 │ 1               │
+│ 2024-01-18 │ 10              │
+│ 2024-01-18 │ 4               │
+│ 2024-01-18 │ 2               │
+│ 2024-01-19 │ 7               │
+│ 2024-01-19 │ 3               │
+│ 2024-01-20 │ 6               │
+└────────────┴─────────────────┘
 ```
 
 
@@ -244,13 +288,36 @@ SELECT fecha, SUM(cantidad) FROM ventas GROUP BY producto_id, fecha;
 
 ```sql
 SELECT * FROM productos WHERE precio <= 2;
+
+┌────┬────────────────────┬───────────┬────────┐
+│ id │       nombre       │ categoria │ precio │
+├────┼────────────────────┼───────────┼────────┤
+│ 2  │ Leche              │ Lácteos   │ 1.8    │
+│ 3  │ Pan                │ Panadería │ 1.2    │
+│ 6  │ Huevos             │ Lácteos   │ 1.0    │
+│ 7  │ Yogurt             │ Lácteos   │ 2.0    │
+│ 11 │ Papel Higiénico    │ Hogar     │ 1.5    │
+│ 12 │ Cepillo de Dientes │ Higiene   │ 2.0    │
+│ 14 │ Galletas           │ Snacks    │ 1.7    │
+│ 18 │ Jabón de Baño      │ Higiene   │ 1.2    │
+│ 19 │ Botellas de Agua   │ Bebidas   │ 1.0    │
+└────┴────────────────────┴───────────┴────────┘
 ```
 
 
 - Calcular la cantidad total de ventas para cada fecha.
 
 ```sql
-SELECT fecha, SUM(cantidad) FROM ventas GROUP BY fecha;
+SELECT fecha, SUM(cantidad) AS total_ventas FROM ventas GROUP BY fecha;
+
+┌────────────┬──────────────┐
+│   fecha    │ total_ventas │
+├────────────┼──────────────┤
+│ 2024-01-17 │ 11           │
+│ 2024-01-18 │ 16           │
+│ 2024-01-19 │ 10           │
+│ 2024-01-20 │ 6            │
+└────────────┴──────────────┘
 ```
 
 
@@ -258,27 +325,64 @@ SELECT fecha, SUM(cantidad) FROM ventas GROUP BY fecha;
 
 ```sql
 SELECT * FROM productos WHERE nombre LIKE 'P%';
+
+┌────┬─────────────────┬───────────┬────────┐
+│ id │     nombre      │ categoria │ precio │
+├────┼─────────────────┼───────────┼────────┤
+│ 3  │ Pan             │ Panadería │ 1.2    │
+│ 5  │ Pollo           │ Carnes    │ 5.5    │
+│ 11 │ Papel Higiénico │ Hogar     │ 1.5    │
+└────┴─────────────────┴───────────┴────────┘
 ```
 
 
 - Obtener el producto más vendido en términos de cantidad.
 
 ```sql
-SELECT productos.nombre, SUM(ventas.cantidad) AS total_ventas FROM productos INNER JOIN ventas ON productos.id = ventas.producto_id GROUP BY productos.id ORDER BY total_ventas DESC LIMIT 1;
+SELECT productos.nombre, SUM(ventas.cantidad) AS total_ventas FROM productos INNER JOIN ventas ON productos.id = ventas.id_producto GROUP BY productos.id ORDER BY total_ventas DESC LIMIT 1;
+
+┌────────┬──────────────┐
+│ nombre │ total_ventas │
+├────────┼──────────────┤
+│ Huevos │ 10           │
+└────────┴──────────────┘
 ```
 
 
 - Mostrar los productos que fueron vendidos en la fecha '__2024-01-18__'.
 
 ```sql
-SELECT productos.nombre, ventas.cantidad FROM productos INNER JOIN ventas ON productos.id = ventas.producto_id WHERE ventas.fecha = '2024-01-18';
+SELECT ventas.fecha, productos.nombre, ventas.cantidad FROM productos INNER JOIN ventas ON productos.id = ventas.id_producto WHERE ventas.fecha = '2024-01-18';
+
+┌────────────┬─────────┬──────────┐
+│   fecha    │ nombre  │ cantidad │
+├────────────┼─────────┼──────────┤
+│ 2024-01-18 │ Huevos  │ 10       │
+│ 2024-01-18 │ Tomates │ 4        │
+│ 2024-01-18 │ Cereal  │ 2        │
+└────────────┴─────────┴──────────┘
 ```
 
 
 - Calcular el total de ventas para cada producto.
 
 ```sql
-SELECT productos.nombre, SUM(ventas.cantidad) FROM productos INNER JOIN ventas ON productos.id = ventas.producto_id GROUP BY productos.id;
+SELECT productos.nombre, SUM(ventas.cantidad) AS total_ventas FROM productos INNER JOIN ventas ON productos.id = ventas.id_producto GROUP BY productos.id;
+
+┌───────────────┬──────────────┐
+│    nombre     │ total_ventas │
+├───────────────┼──────────────┤
+│ Arroz         │ 5            │
+│ Leche         │ 3            │
+│ Manzanas      │ 2            │
+│ Pollo         │ 1            │
+│ Huevos        │ 10           │
+│ Tomates       │ 4            │
+│ Cereal        │ 2            │
+│ Galletas      │ 7            │
+│ Café          │ 3            │
+│ Jabón de Baño │ 6            │
+└───────────────┴──────────────┘
 ```
 
 
@@ -286,6 +390,15 @@ SELECT productos.nombre, SUM(ventas.cantidad) FROM productos INNER JOIN ventas O
 
 ```sql
 SELECT * FROM productos WHERE precio BETWEEN 3 AND 4;
+
+┌────┬──────────┬───────────┬────────┐
+│ id │  nombre  │ categoria │ precio │
+├────┼──────────┼───────────┼────────┤
+│ 4  │ Manzanas │ Frutas    │ 3.0    │
+│ 9  │ Queso    │ Lácteos   │ 4.0    │
+│ 10 │ Cereal   │ Desayuno  │ 3.5    │
+│ 20 │ Cerveza  │ Bebidas   │ 3.8    │
+└────┴──────────┴───────────┴────────┘
 ```
 
 
@@ -293,13 +406,44 @@ SELECT * FROM productos WHERE precio BETWEEN 3 AND 4;
 
 ```sql
 SELECT * FROM productos ORDER BY categoria ASC;
+
+┌────┬────────────────────┬───────────┬────────┐
+│ id │       nombre       │ categoria │ precio │
+├────┼────────────────────┼───────────┼────────┤
+│ 1  │ Arroz              │ Alimentos │ 2.5    │
+│ 16 │ Café               │ Bebidas   │ 5.0    │
+│ 19 │ Botellas de Agua   │ Bebidas   │ 1.0    │
+│ 20 │ Cerveza            │ Bebidas   │ 3.8    │
+│ 5  │ Pollo              │ Carnes    │ 5.5    │
+│ 15 │ Aceite de Oliva    │ Cocina    │ 4.5    │
+│ 17 │ Sopa enlatada      │ Conservas │ 2.3    │
+│ 10 │ Cereal             │ Desayuno  │ 3.5    │
+│ 4  │ Manzanas           │ Frutas    │ 3.0    │
+│ 12 │ Cepillo de Dientes │ Higiene   │ 2.0    │
+│ 18 │ Jabón de Baño      │ Higiene   │ 1.2    │
+│ 11 │ Papel Higiénico    │ Hogar     │ 1.5    │
+│ 13 │ Detergente         │ Limpieza  │ 2.8    │
+│ 2  │ Leche              │ Lácteos   │ 1.8    │
+│ 6  │ Huevos             │ Lácteos   │ 1.0    │
+│ 7  │ Yogurt             │ Lácteos   │ 2.0    │
+│ 9  │ Queso              │ Lácteos   │ 4.0    │
+│ 3  │ Pan                │ Panadería │ 1.2    │
+│ 14 │ Galletas           │ Snacks    │ 1.7    │
+│ 8  │ Tomates            │ Verduras  │ 2.2    │
+└────┴────────────────────┴───────────┴────────┘
 ```
 
 
 - Calcular el precio total de los productos vendidos en la fecha '2024-01-19'.
 
 ```sql
-SELECT SUM(productos.precio * ventas.cantidad) FROM productos INNER JOIN ventas ON productos.id = ventas.producto_id WHERE ventas.fecha = '2024-01-19';
+SELECT ventas.fecha, SUM(productos.precio * ventas.cantidad) AS precio_total_productos_vendidos FROM productos INNER JOIN ventas ON productos.id = ventas.id_producto WHERE ventas.fecha = '2024-01-19';
+
+┌────────────┬─────────────────────────────────┐
+│   fecha    │ precio_total_productos_vendidos │
+├────────────┼─────────────────────────────────┤
+│ 2024-01-19 │ 26.9                            │
+└────────────┴─────────────────────────────────┘
 ```
 
 
@@ -307,13 +451,55 @@ SELECT SUM(productos.precio * ventas.cantidad) FROM productos INNER JOIN ventas 
 
 ```sql
 SELECT * FROM productos WHERE categoria != 'Higiene';
+
+┌────┬──────────────────┬───────────┬────────┐
+│ id │      nombre      │ categoria │ precio │
+├────┼──────────────────┼───────────┼────────┤
+│ 1  │ Arroz            │ Alimentos │ 2.5    │
+│ 2  │ Leche            │ Lácteos   │ 1.8    │
+│ 3  │ Pan              │ Panadería │ 1.2    │
+│ 4  │ Manzanas         │ Frutas    │ 3.0    │
+│ 5  │ Pollo            │ Carnes    │ 5.5    │
+│ 6  │ Huevos           │ Lácteos   │ 1.0    │
+│ 7  │ Yogurt           │ Lácteos   │ 2.0    │
+│ 8  │ Tomates          │ Verduras  │ 2.2    │
+│ 9  │ Queso            │ Lácteos   │ 4.0    │
+│ 10 │ Cereal           │ Desayuno  │ 3.5    │
+│ 11 │ Papel Higiénico  │ Hogar     │ 1.5    │
+│ 13 │ Detergente       │ Limpieza  │ 2.8    │
+│ 14 │ Galletas         │ Snacks    │ 1.7    │
+│ 15 │ Aceite de Oliva  │ Cocina    │ 4.5    │
+│ 16 │ Café             │ Bebidas   │ 5.0    │
+│ 17 │ Sopa enlatada    │ Conservas │ 2.3    │
+│ 19 │ Botellas de Agua │ Bebidas   │ 1.0    │
+│ 20 │ Cerveza          │ Bebidas   │ 3.8    │
+└────┴──────────────────┴───────────┴────────┘
 ```
 
 
 - Encontrar la cantidad total de productos en cada categoría.
 
 ```sql
-SELECT categoria, SUM(id) FROM productos GROUP BY categoria;
+SELECT categoria, COUNT(*) AS cantidad FROM productos GROUP BY categoria;
+
+┌───────────┬──────────┐
+│ categoria │ cantidad │
+├───────────┼──────────┤
+│ Alimentos │ 1        │
+│ Bebidas   │ 3        │
+│ Carnes    │ 1        │
+│ Cocina    │ 1        │
+│ Conservas │ 1        │
+│ Desayuno  │ 1        │
+│ Frutas    │ 1        │
+│ Higiene   │ 2        │
+│ Hogar     │ 1        │
+│ Limpieza  │ 1        │
+│ Lácteos   │ 4        │
+│ Panadería │ 1        │
+│ Snacks    │ 1        │
+│ Verduras  │ 1        │
+└───────────┴──────────┘
 ```
 
 
@@ -322,12 +508,21 @@ SELECT categoria, SUM(id) FROM productos GROUP BY categoria;
 ```sql
 SELECT * FROM productos WHERE precio = (SELECT AVG(precio) FROM productos);
 ```
-
+> No devuelve nada porque no hay ningún producto que tenga el mismo precio que la media de precios (2.625).
 
 - Calcular el precio total de los productos vendidos en cada fecha.
 
 ```sql
-SELECT fecha, SUM(productos.precio * ventas.cantidad) FROM productos INNER JOIN ventas ON productos.id = ventas.producto_id GROUP BY fecha;
+SELECT fecha, SUM(productos.precio * ventas.cantidad) AS total_productos_vendidos FROM productos INNER JOIN ventas ON productos.id = ventas.id_producto GROUP BY fecha;
+
+┌────────────┬──────────────────────────┐
+│   fecha    │ total_productos_vendidos │
+├────────────┼──────────────────────────┤
+│ 2024-01-17 │ 29.4                     │
+│ 2024-01-18 │ 25.8                     │
+│ 2024-01-19 │ 26.9                     │
+│ 2024-01-20 │ 7.2                      │
+└────────────┴──────────────────────────┘
 ```
 
 
@@ -341,7 +536,7 @@ SELECT * FROM productos WHERE nombre LIKE '%o';
 - Encontrar los productos que han sido vendidos en más de una fecha.
 
 ```sql
-SELECT productos.nombre FROM productos INNER JOIN ventas ON productos.id = ventas.producto_id GROUP BY productos.id HAVING COUNT(DISTINCT ventas.fecha) > 1;
+SELECT productos.nombre FROM productos INNER JOIN ventas ON productos.id = ventas.id_producto GROUP BY productos.id HAVING COUNT(DISTINCT ventas.fecha) > 1;
 ```
 
 
@@ -355,7 +550,7 @@ SELECT * FROM productos WHERE categoria LIKE 'L%';
 - Calcular el total de ventas para cada producto en la fecha '2024-01-17'.
 
 ```sql
-SELECT productos.nombre, SUM(ventas.cantidad) AS total_ventas FROM productos INNER JOIN ventas ON productos.id = ventas.producto_id WHERE ventas.fecha = '2024-01-17' GROUP BY productos.id;
+SELECT productos.nombre, SUM(ventas.cantidad) AS total_ventas FROM productos INNER JOIN ventas ON productos.id = ventas.id_producto WHERE ventas.fecha = '2024-01-17' GROUP BY productos.id;
 ```
 
 
