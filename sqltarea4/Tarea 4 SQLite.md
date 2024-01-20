@@ -84,8 +84,13 @@ Haciendo un .read del fichero sql, de nombre supermercado-db.sql, realiza la cre
 ### **Paso 3: Responde a las siguientes cuestiones.**
 
 - Realiza el diagrama __ER__ de la __BBDD__ supermercado.
+
+![](https://raw.githubusercontent.com/RafaelMayor/base-datos/main/sqltarea4/Diagrama%20ER%20Tarea%204%20SQLite.drawio.png)
+
 - Realiza el diagrama __MR__ de la __BBDD__ supermercado.
+
 - Indica si la BBDD esta __normalizada__ hasta la 3ª forma normal, justificando la respuesta.
+Sí, está normalizada. Todos los valores son atómicos, todo ronda en torno a la clave primaria y no existen dependencias transitivas.
 
 ### **Paso 4: Responde a las siguientes cuestiones.**
 
