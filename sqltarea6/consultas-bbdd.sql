@@ -1,3 +1,4 @@
+-- Rafael Martín Mayor.
 -- Obtener todos los clientes.
 SELECT * FROM Clientes;
 /**
