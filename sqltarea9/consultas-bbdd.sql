@@ -1,3 +1,5 @@
+-- Rafael Martín Mayor.
+
 -- Obtener el nombre del alumno y el nombre de la clase en la que está inscrito.
 SELECT a.nombre, c.nombre FROM Alumnos a JOIN Clases c ON c.id = i.id_clase JOIN Inscripciones i ON i.id_alumno = a.id;
 /**
