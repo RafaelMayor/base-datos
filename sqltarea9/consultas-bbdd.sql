@@ -162,7 +162,20 @@ SELECT a.nombre, c.materia FROM Alumnos a JOIN Clases c ON c.id = i.id_clase JOI
 └────────┴─────────────┘
 **/
 -- Contar cuántos alumnos están inscritos en cada clase.
-
+SELECT c.nombre, COUNT(i.id_alumno) AS num_alumnos FROM Clases c INNER JOIN Inscripciones i ON i.id_clase = c.id GROUP BY i.id_clase;
 /**
-
+┌────────────────────────┬─────────────┐
+│         nombre         │ num_alumnos │
+├────────────────────────┼─────────────┤
+│ Matemáticas 101        │ 1           │
+│ Historia Antigua       │ 1           │
+│ Literatura Moderna     │ 1           │
+│ Biología Avanzada      │ 1           │
+│ Química Orgánica       │ 1           │
+│ Física Cuántica        │ 1           │
+│ Arte Contemporáneo     │ 1           │
+│ Inglés Avanzado        │ 1           │
+│ Economía Internacional │ 1           │
+│ Derecho Penal          │ 1           │
+└────────────────────────┴─────────────┘
 **/
