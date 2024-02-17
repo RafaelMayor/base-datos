@@ -2435,129 +2435,674 @@ SELECT strftime('%Y', fecha_pago) AS año, SUM(total) AS suma_total_pagos FROM p
 
 
 -- Devuelve el nombre del cliente con mayor límite de crédito.
-
+SELECT nombre_cliente, limite_credito FROM cliente ORDER BY limite_credito DESC LIMIT 1;
 /**
-
+┌────────────────┬────────────────┐
+│ nombre_cliente │ limite_credito │
+├────────────────┼────────────────┤
+│ Tendo Garden   │ 600000         │
+└────────────────┴────────────────┘
 **/
 
 -- Devuelve el nombre del producto que tenga el precio de venta más caro.
-
+SELECT nombre, precio_venta FROM producto ORDER BY precio_venta DESC LIMIT 1;
 /**
-
+┌───────────────────────┬──────────────┐
+│        nombre         │ precio_venta │
+├───────────────────────┼──────────────┤
+│ Trachycarpus Fortunei │ 462          │
+└───────────────────────┴──────────────┘
 **/
 
 -- Devuelve el nombre del producto del que se han vendido más unidades. (Tenga en cuenta que tendrá que calcular cuál es el número total de unidades que se han vendido de cada producto a partir de los datos de la tabla detalle_pedido)
-
+SELECT p.nombre, SUM(dp.cantidad) AS cantidad_total_vendida FROM producto p JOIN detalle_pedido dp ON p.codigo_producto = dp.codigo_producto GROUP BY p.codigo_producto ORDER BY SUM(dp.cantidad) DESC LIMIT 1;
 /**
-
+┌─────────────────┬────────────────────────┐
+│     nombre      │ cantidad_total_vendida │
+├─────────────────┼────────────────────────┤
+│ Thymus Vulgaris │ 961                    │
+└─────────────────┴────────────────────────┘
 **/
 
 -- Los clientes cuyo límite de crédito sea mayor que los pagos que haya realizado. (Sin utilizar INNER JOIN).
-
+SELECT nombre_cliente FROM cliente WHERE limite_credito > (SELECT SUM(total) FROM pago WHERE codigo_cliente = cliente.codigo_cliente GROUP BY codigo_cliente);
 /**
-
+┌────────────────────────────────┐
+│         nombre_cliente         │
+├────────────────────────────────┤
+│ Tendo Garden                   │
+│ Beragua                        │
+│ Naturagua                      │
+│ Camunas Jardines S.L.          │
+│ Dardena S.A.                   │
+│ Jardin de Flores               │
+│ Golf S.A.                      │
+│ Sotogrande                     │
+│ Jardines y Mansiones Cactus SL │
+│ Jardinerías Matías SL          │
+│ Tutifruti S.A                  │
+│ El Jardin Viviente S.L         │
+└────────────────────────────────┘
 **/
 
 -- Devuelve el producto que más unidades tiene en stock.
-
+SELECT nombre, cantidad_en_stock FROM producto ORDER BY cantidad_en_stock DESC LIMIT 1;
 /**
-
+┌─────────────┬───────────────────┐
+│   nombre    │ cantidad_en_stock │
+├─────────────┼───────────────────┤
+│ Rosal copa  │ 400               │
+└─────────────┴───────────────────┘
 **/
 
 -- Devuelve el producto que menos unidades tiene en stock.
-
+SELECT nombre, cantidad_en_stock FROM producto ORDER BY cantidad_en_stock ASC LIMIT 1;
 /**
-
+┌───────────────┬───────────────────┐
+│    nombre     │ cantidad_en_stock │
+├───────────────┼───────────────────┤
+│ Brahea Armata │ 0                 │
+└───────────────┴───────────────────┘
 **/
 
 -- Devuelve el nombre, los apellidos y el email de los empleados que están a cargo de Alberto Soria.
-
+SELECT e.nombre, e.apellido1||' '||e.apellido2 AS apellidos, e.email, j.nombre||' '||j.apellido1 AS jefe FROM empleado e JOIN empleado j ON e.codigo_jefe = j.codigo_empleado WHERE j.nombre||' '||j.apellido1 = 'Alberto Soria';
 /**
-
+┌─────────────┬───────────────┬───────────────────────────┬───────────────┐
+│   nombre    │   apellidos   │           email           │     jefe      │
+├─────────────┼───────────────┼───────────────────────────┼───────────────┤
+│ Felipe      │ Rosas Marquez │ frosas@jardineria.es      │ Alberto Soria │
+│ Juan Carlos │ Ortiz Serrano │ cortiz@jardineria.es      │ Alberto Soria │
+│ Carlos      │ Soria Jimenez │ csoria@jardineria.es      │ Alberto Soria │
+│ Emmanuel    │ Magaña Perez  │ manu@jardineria.es        │ Alberto Soria │
+│ Francois    │ Fignon        │ ffignon@gardening.com     │ Alberto Soria │
+│ Michael     │ Bolton        │ mbolton@gardening.com     │ Alberto Soria │
+│ Hilary      │ Washington    │ hwashington@gardening.com │ Alberto Soria │
+│ Nei         │ Nishikori     │ nnishikori@gardening.com  │ Alberto Soria │
+│ Amy         │ Johnson       │ ajohnson@gardening.com    │ Alberto Soria │
+│ Kevin       │ Fallmer       │ kfalmer@gardening.com     │ Alberto Soria │
+└─────────────┴───────────────┴───────────────────────────┴───────────────┘
 **/
 
 -- Devuelve el nombre del cliente con mayor límite de crédito.
-
+SELECT nombre_cliente, limite_credito FROM cliente ORDER BY limite_credito DESC LIMIT 1;
 /**
-
+┌────────────────┬────────────────┐
+│ nombre_cliente │ limite_credito │
+├────────────────┼────────────────┤
+│ Tendo Garden   │ 600000         │
+└────────────────┴────────────────┘
 **/
 
 -- Devuelve el nombre del producto que tenga el precio de venta más caro.
-
+SELECT nombre, precio_venta FROM producto ORDER BY precio_venta DESC LIMIT 1;
 /**
-
+┌───────────────────────┬──────────────┐
+│        nombre         │ precio_venta │
+├───────────────────────┼──────────────┤
+│ Trachycarpus Fortunei │ 462          │
+└───────────────────────┴──────────────┘
 **/
 
 -- Devuelve el producto que menos unidades tiene en stock.
-
+SELECT nombre, cantidad_en_stock FROM producto ORDER BY cantidad_en_stock ASC LIMIT 1;
 /**
-
+┌───────────────┬───────────────────┐
+│    nombre     │ cantidad_en_stock │
+├───────────────┼───────────────────┤
+│ Brahea Armata │ 0                 │
+└───────────────┴───────────────────┘
 **/
 
 -- Devuelve el nombre, apellido1 y cargo de los empleados que no representen a ningún cliente.
-
+SELECT nombre, apellido1, puesto FROM empleado WHERE codigo_empleado NOT IN (SELECT DISTINCT codigo_empleado_rep_ventas FROM cliente);
 /**
-
+┌─────────────┬────────────┬───────────────────────┐
+│   nombre    │ apellido1  │        puesto         │
+├─────────────┼────────────┼───────────────────────┤
+│ Marcos      │ Magaña     │ Director General      │
+│ Ruben       │ López      │ Subdirector Marketing │
+│ Alberto     │ Soria      │ Subdirector Ventas    │
+│ Maria       │ Solís      │ Secretaria            │
+│ Juan Carlos │ Ortiz      │ Representante Ventas  │
+│ Carlos      │ Soria      │ Director Oficina      │
+│ Hilario     │ Rodriguez  │ Representante Ventas  │
+│ David       │ Palma      │ Representante Ventas  │
+│ Oscar       │ Palma      │ Representante Ventas  │
+│ Francois    │ Fignon     │ Director Oficina      │
+│ Laurent     │ Serra      │ Representante Ventas  │
+│ Hilary      │ Washington │ Director Oficina      │
+│ Marcus      │ Paxton     │ Representante Ventas  │
+│ Nei         │ Nishikori  │ Director Oficina      │
+│ Narumi      │ Riko       │ Representante Ventas  │
+│ Takuma      │ Nomura     │ Representante Ventas  │
+│ Amy         │ Johnson    │ Director Oficina      │
+│ Larry       │ Westfalls  │ Representante Ventas  │
+│ John        │ Walton     │ Representante Ventas  │
+│ Kevin       │ Fallmer    │ Director Oficina      │
+└─────────────┴────────────┴───────────────────────┘
 **/
 
 -- Devuelve un listado que muestre solamente los clientes que no han realizado ningún pago.
-
+select c.codigo_cliente, c.nombre_cliente from cliente c left join pago p on c.codigo_cliente = p.codigo_cliente where p.codigo_cliente is null;
 /**
-
+┌────────────────┬─────────────────────────────┐
+│ codigo_cliente │       nombre_cliente        │
+├────────────────┼─────────────────────────────┤
+│ 6              │ Lasas S.A.                  │
+│ 8              │ Club Golf Puerta del hierro │
+│ 10             │ DaraDistribuciones          │
+│ 11             │ Madrileña de riegos         │
+│ 12             │ Lasas S.A.                  │
+│ 17             │ Flowers, S.A                │
+│ 18             │ Naturajardin                │
+│ 20             │ Americh Golf Management SL  │
+│ 21             │ Aloha                       │
+│ 22             │ El Prat                     │
+│ 24             │ Vivero Humanes              │
+│ 25             │ Fuenla City                 │
+│ 29             │ Top Campo                   │
+│ 31             │ Campohermoso                │
+│ 32             │ france telecom              │
+│ 33             │ Musée du Louvre             │
+│ 36             │ Flores S.L.                 │
+│ 37             │ The Magic Garden            │
+└────────────────┴─────────────────────────────┘
 **/
 
 -- Devuelve un listado que muestre solamente los clientes que sí han realizado algún pago.
-
+select distinct c.codigo_cliente, c.nombre_cliente from cliente c left join pago p on c.codigo_cliente = p.codigo_cliente where p.codigo_cliente not null;
 /**
-
+┌────────────────┬────────────────────────────────┐
+│ codigo_cliente │         nombre_cliente         │
+├────────────────┼────────────────────────────────┤
+│ 1              │ GoldFish Garden                │
+│ 3              │ Gardening Associates           │
+│ 4              │ Gerudo Valley                  │
+│ 5              │ Tendo Garden                   │
+│ 7              │ Beragua                        │
+│ 9              │ Naturagua                      │
+│ 13             │ Camunas Jardines S.L.          │
+│ 14             │ Dardena S.A.                   │
+│ 15             │ Jardin de Flores               │
+│ 16             │ Flores Marivi                  │
+│ 19             │ Golf S.A.                      │
+│ 23             │ Sotogrande                     │
+│ 26             │ Jardines y Mansiones Cactus SL │
+│ 27             │ Jardinerías Matías SL          │
+│ 28             │ Agrojardin                     │
+│ 30             │ Jardineria Sara                │
+│ 35             │ Tutifruti S.A                  │
+│ 38             │ El Jardin Viviente S.L         │
+└────────────────┴────────────────────────────────┘
 **/
 
 -- Devuelve un listado de los productos que nunca han aparecido en un pedido.
-
+SELECT distinct p.nombre FROM producto p LEFT JOIN detalle_pedido dp ON p.codigo_producto = dp.codigo_producto WHERE dp.codigo_producto IS NULL;
 /**
-
+┌─────────────────────────────────────────────────────────────┐
+│                           nombre                            │
+├─────────────────────────────────────────────────────────────┤
+│ Olea-Olivos                                                 │
+│ Calamondin Mini                                             │
+│ Camelia Blanco, Chrysler Rojo, Soraya Naranja,              │
+│ Landora Amarillo, Rose Gaujard bicolor blanco-rojo          │
+│ Kordes Perfect bicolor rojo-amarillo, Roundelay rojo fuerte │
+│ Albaricoquero Corbato                                       │
+│ Albaricoquero Moniqui                                       │
+│ Albaricoquero Kurrot                                        │
+│ Cerezo Burlat                                               │
+│ Cerezo Picota                                               │
+│ Ciruelo R. Claudia Verde                                    │
+│ Ciruelo Golden Japan                                        │
+│ Ciruelo Claudia Negra                                       │
+│ Higuera Verdal                                              │
+│ Higuera Breva                                               │
+│ Melocotonero Spring Crest                                   │
+│ Melocotonero Federica                                       │
+│ Parra Uva de Mesa                                           │
+│ Mandarino -Plantón joven                                    │
+│ Peral Castell                                               │
+│ Peral Williams                                              │
+│ Peral Conference                                            │
+│ Olivo Cipresino                                             │
+│ Albaricoquero                                               │
+│ Cerezo                                                      │
+│ Ciruelo                                                     │
+│ Granado                                                     │
+│ Higuera                                                     │
+│ Manzano                                                     │
+│ Melocotonero                                                │
+│ Membrillero                                                 │
+│ Arbustos Mix Maceta                                         │
+│ Mimosa Injerto CLASICA Dealbata                             │
+│ Mimosa Semilla Bayleyana                                    │
+│ Mimosa Semilla Espectabilis                                 │
+│ Mimosa Semilla Longifolia                                   │
+│ Mimosa Semilla Floribunda 4 estaciones                      │
+│ Abelia Floribunda                                           │
+│ Callistemom (Mix)                                           │
+│ Corylus Avellana \"Contorta\"                               │
+│ Escallonia (Mix)                                            │
+│ Evonimus Emerald Gayeti                                     │
+│ Evonimus Pulchellus                                         │
+│ Hibiscus Syriacus  \"Helene\" -Blanco-C.rojo                │
+│ Hibiscus Syriacus \"Pink Giant\" Rosa                       │
+│ Lonicera Nitida \"Maigrum\"                                 │
+│ Prunus pisardii                                             │
+│ Weigelia \"Bristol Ruby\"                                   │
+│ Leptospermum formado PIRAMIDE                               │
+│ Leptospermum COPA                                           │
+│ Nerium oleander-CALIDAD \"GARDEN\"                          │
+│ Nerium Oleander Arbusto GRANDE                              │
+│ Nerium oleander COPA  Calibre 6/8                           │
+│ ROSAL TREPADOR                                              │
+│ Solanum Jazminoide                                          │
+│ Wisteria Sinensis  azul, rosa, blanca                       │
+│ Wisteria Sinensis INJERTADAS DECÃ“                          │
+│ Bougamvillea Sanderiana Tutor                               │
+│ Bougamvillea Sanderiana Espaldera                           │
+│ Bougamvillea Sanderiana, 3 tut. piramide                    │
+│ Expositor Árboles clima mediterráneo                        │
+│ Expositor Árboles borde del mar                             │
+│ Brachychiton Acerifolius                                    │
+│ Cassia Corimbosa                                            │
+│ Cassia Corimbosa                                            │
+│ Chitalpa Summer Bells                                       │
+│ Erytrina Kafra                                              │
+│ Eucalyptus Citriodora                                       │
+│ Eucalyptus Ficifolia                                        │
+│ Hibiscus Syriacus  Var. Injertadas 1 Tallo                  │
+│ Lagunaria Patersonii                                        │
+│ Lagunaria Patersonii                                        │
+│ Morus Alba                                                  │
+│ Platanus Acerifolia                                         │
+│ Salix Babylonica  Pendula                                   │
+│ Tamarix  Ramosissima Pink Cascade                           │
+│ Tecoma Stands                                               │
+│ Tecoma Stands                                               │
+│ Tipuana Tipu                                                │
+│ Pleioblastus distichus-Bambú enano                          │
+│ Sasa palmata                                                │
+│ Phylostachys aurea                                          │
+│ Phylostachys Bambusa Spectabilis                            │
+│ Phylostachys biseti                                         │
+│ Pseudosasa japonica (Metake)                                │
+│ Pseudosasa japonica (Metake)                                │
+│ Cedrus Deodara \"Feeling Blue\" Novedad                     │
+│ Juniperus chinensis \"Blue Alps\"                           │
+│ Juniperus Chinensis Stricta                                 │
+│ Juniperus squamata \"Blue Star\"                            │
+│ Juniperus x media Phitzeriana verde                         │
+│ Bismarckia Nobilis                                          │
+│ Brahea Armata                                               │
+│ Brahea Edulis                                               │
+│ Butia Capitata                                              │
+│ Chamaerops Humilis                                          │
+│ Chamaerops Humilis \"Cerifera\"                             │
+│ Chrysalidocarpus Lutescens -ARECA                           │
+│ Cordyline Australis -DRACAENA                               │
+│ Cycas Revoluta                                              │
+│ Dracaena Drago                                              │
+│ Livistonia Decipiens                                        │
+│ Rhaphis Excelsa                                             │
+│ Sabal Minor                                                 │
+│ Trachycarpus Fortunei                                       │
+│ Washingtonia Robusta                                        │
+│ Zamia Furfuracaea                                           │
+└─────────────────────────────────────────────────────────────┘
 **/
 
 -- Devuelve el nombre, apellidos, puesto y teléfono de la oficina de aquellos empleados que no sean representante de ventas de ningún cliente.
-
+SELECT e.nombre, e.apellido1||' '||e.apellido2 AS apellidos, e.puesto, o.telefono FROM empleado e LEFT JOIN oficina o ON e.codigo_oficina = o.codigo_oficina WHERE e.codigo_empleado NOT IN (SELECT DISTINCT codigo_empleado_rep_ventas FROM cliente WHERE codigo_empleado_rep_ventas NOT NULL);
 /**
-
+┌─────────────┬───────────────────┬───────────────────────┬─────────────────┐
+│   nombre    │     apellidos     │        puesto         │    telefono     │
+├─────────────┼───────────────────┼───────────────────────┼─────────────────┤
+│ Marcos      │ Magaña Perez      │ Director General      │ +34 925 867231  │
+│ Ruben       │ López Martinez    │ Subdirector Marketing │ +34 925 867231  │
+│ Alberto     │ Soria Carrasco    │ Subdirector Ventas    │ +34 925 867231  │
+│ Maria       │ Solís Jerez       │ Secretaria            │ +34 925 867231  │
+│ Juan Carlos │ Ortiz Serrano     │ Representante Ventas  │ +34 925 867231  │
+│ Carlos      │ Soria Jimenez     │ Director Oficina      │ +34 91 7514487  │
+│ Hilario     │ Rodriguez Huertas │ Representante Ventas  │ +34 91 7514487  │
+│ David       │ Palma Aceituno    │ Representante Ventas  │ +34 93 3561182  │
+│ Oscar       │ Palma Aceituno    │ Representante Ventas  │ +34 93 3561182  │
+│ Francois    │ Fignon            │ Director Oficina      │ +33 14 723 4404 │
+│ Laurent     │ Serra             │ Representante Ventas  │ +33 14 723 4404 │
+│ Hilary      │ Washington        │ Director Oficina      │ +1 215 837 0825 │
+│ Marcus      │ Paxton            │ Representante Ventas  │ +1 215 837 0825 │
+│ Nei         │ Nishikori         │ Director Oficina      │ +81 33 224 5000 │
+│ Narumi      │ Riko              │ Representante Ventas  │ +81 33 224 5000 │
+│ Takuma      │ Nomura            │ Representante Ventas  │ +81 33 224 5000 │
+│ Amy         │ Johnson           │ Director Oficina      │ +44 20 78772041 │
+│ Larry       │ Westfalls         │ Representante Ventas  │ +44 20 78772041 │
+│ John        │ Walton            │ Representante Ventas  │ +44 20 78772041 │
+│ Kevin       │ Fallmer           │ Director Oficina      │ +61 2 9264 2451 │
+└─────────────┴───────────────────┴───────────────────────┴─────────────────┘
 **/
 
 -- Devuelve las oficinas donde no trabajan ninguno de los empleados que hayan sido los representantes de ventas de algún cliente que haya realizado la compra de algún producto de la gama Frutales.
-
+SELECT distinct o.* FROM oficina o LEFT JOIN empleado e ON o.codigo_oficina = e.codigo_oficina LEFT JOIN cliente c ON e.codigo_empleado = c.codigo_empleado_rep_ventas LEFT JOIN pedido pe ON c.codigo_cliente = pe.codigo_cliente LEFT JOIN detalle_pedido dp ON pe.codigo_pedido = dp.codigo_pedido LEFT JOIN producto p ON dp.codigo_producto = p.codigo_producto WHERE p.gama = 'Frutales';
 /**
-
+┌────────────────┬──────────────────────┬───────────┬───────────────────┬───────────────┬─────────────────┬──────────────────────────────┬─────────────────────┐
+│ codigo_oficina │        ciudad        │   pais    │      region       │ codigo_postal │    telefono     │       linea_direccion1       │  linea_direccion2   │
+├────────────────┼──────────────────────┼───────────┼───────────────────┼───────────────┼─────────────────┼──────────────────────────────┼─────────────────────┤
+│ BCN-ES         │ Barcelona            │ España    │ Barcelona         │ 08019         │ +34 93 3561182  │ Avenida Diagonal, 38         │ 3A escalera Derecha │
+│ BOS-USA        │ Boston               │ EEUU      │ MA                │ 02108         │ +1 215 837 0825 │ 1550 Court Place             │ Suite 102           │
+│ MAD-ES         │ Madrid               │ España    │ Madrid            │ 28032         │ +34 91 7514487  │ Bulevar Indalecio Prieto, 32 │                     │
+│ SFC-USA        │ San Francisco        │ EEUU      │ CA                │ 94080         │ +1 650 219 4782 │ 100 Market Street            │ Suite 300           │
+│ SYD-AU         │ Sydney               │ Australia │ APAC              │ NSW 2010      │ +61 2 9264 2451 │ 5-11 Wentworth Avenue        │ Floor #2            │
+│ TAL-ES         │ Talavera de la Reina │ España    │ Castilla-LaMancha │ 45632         │ +34 925 867231  │ Francisco Aguirre, 32        │ 5º piso (exterior)  │
+└────────────────┴──────────────────────┴───────────┴───────────────────┴───────────────┴─────────────────┴──────────────────────────────┴─────────────────────┘
 **/
 
 -- Devuelve un listado con los clientes que han realizado algún pedido pero no han realizado ningún pago.
-
+SELECT distinct c.* FROM cliente c LEFT JOIN pedido pe ON c.codigo_cliente = pe.codigo_cliente LEFT JOIN pago pa ON c.codigo_cliente = pa.codigo_cliente WHERE pe.codigo_pedido NOT NULL AND pa.codigo_cliente IS NULL;
 /**
-
+┌────────────────┬────────────────┬─────────────────┬───────────────────┬───────────┬───────────┬──────────────────┬──────────────────┬────────┬─────────────┬───────┬───────────────┬────────────────────────────┬────────────────┐
+│ codigo_cliente │ nombre_cliente │ nombre_contacto │ apellido_contacto │ telefono  │    fax    │ linea_direccion1 │ linea_direccion2 │ ciudad │   region    │ pais  │ codigo_postal │ codigo_empleado_rep_ventas │ limite_credito │
+├────────────────┼────────────────┼─────────────────┼───────────────────┼───────────┼───────────┼──────────────────┼──────────────────┼────────┼─────────────┼───────┼───────────────┼────────────────────────────┼────────────────┤
+│ 36             │ Flores S.L.    │ Antonio         │ Romero            │ 654352981 │ 685249700 │ Avenida España   │                  │ Madrid │ Fuenlabrada │ Spain │ 29643         │ 18                         │ 6000           │
+└────────────────┴────────────────┴─────────────────┴───────────────────┴───────────┴───────────┴──────────────────┴──────────────────┴────────┴─────────────┴───────┴───────────────┴────────────────────────────┴────────────────┘
 **/
 
 -- Devuelve un listado que muestre solamente los clientes que no han realizado ningún pago.
-
+select c.codigo_cliente, c.nombre_cliente from cliente c left join pago p on c.codigo_cliente = p.codigo_cliente where p.codigo_cliente is null;
 /**
-
+┌────────────────┬─────────────────────────────┐
+│ codigo_cliente │       nombre_cliente        │
+├────────────────┼─────────────────────────────┤
+│ 6              │ Lasas S.A.                  │
+│ 8              │ Club Golf Puerta del hierro │
+│ 10             │ DaraDistribuciones          │
+│ 11             │ Madrileña de riegos         │
+│ 12             │ Lasas S.A.                  │
+│ 17             │ Flowers, S.A                │
+│ 18             │ Naturajardin                │
+│ 20             │ Americh Golf Management SL  │
+│ 21             │ Aloha                       │
+│ 22             │ El Prat                     │
+│ 24             │ Vivero Humanes              │
+│ 25             │ Fuenla City                 │
+│ 29             │ Top Campo                   │
+│ 31             │ Campohermoso                │
+│ 32             │ france telecom              │
+│ 33             │ Musée du Louvre             │
+│ 36             │ Flores S.L.                 │
+│ 37             │ The Magic Garden            │
+└────────────────┴─────────────────────────────┘
 **/
 
 -- Devuelve un listado que muestre solamente los clientes que sí han realizado algún pago.
-
+select distinct c.codigo_cliente, c.nombre_cliente from cliente c left join pago p on c.codigo_cliente = p.codigo_cliente where p.codigo_cliente not null;
 /**
-
+┌────────────────┬────────────────────────────────┐
+│ codigo_cliente │         nombre_cliente         │
+├────────────────┼────────────────────────────────┤
+│ 1              │ GoldFish Garden                │
+│ 3              │ Gardening Associates           │
+│ 4              │ Gerudo Valley                  │
+│ 5              │ Tendo Garden                   │
+│ 7              │ Beragua                        │
+│ 9              │ Naturagua                      │
+│ 13             │ Camunas Jardines S.L.          │
+│ 14             │ Dardena S.A.                   │
+│ 15             │ Jardin de Flores               │
+│ 16             │ Flores Marivi                  │
+│ 19             │ Golf S.A.                      │
+│ 23             │ Sotogrande                     │
+│ 26             │ Jardines y Mansiones Cactus SL │
+│ 27             │ Jardinerías Matías SL          │
+│ 28             │ Agrojardin                     │
+│ 30             │ Jardineria Sara                │
+│ 35             │ Tutifruti S.A                  │
+│ 38             │ El Jardin Viviente S.L         │
+└────────────────┴────────────────────────────────┘
 **/
 
 -- Devuelve un listado de los productos que nunca han aparecido en un pedido.
-
+SELECT distinct p.nombre FROM producto p LEFT JOIN detalle_pedido dp ON p.codigo_producto = dp.codigo_producto WHERE dp.codigo_producto IS NULL;
 /**
-
+┌─────────────────────────────────────────────────────────────┐
+│                           nombre                            │
+├─────────────────────────────────────────────────────────────┤
+│ Olea-Olivos                                                 │
+│ Calamondin Mini                                             │
+│ Camelia Blanco, Chrysler Rojo, Soraya Naranja,              │
+│ Landora Amarillo, Rose Gaujard bicolor blanco-rojo          │
+│ Kordes Perfect bicolor rojo-amarillo, Roundelay rojo fuerte │
+│ Albaricoquero Corbato                                       │
+│ Albaricoquero Moniqui                                       │
+│ Albaricoquero Kurrot                                        │
+│ Cerezo Burlat                                               │
+│ Cerezo Picota                                               │
+│ Ciruelo R. Claudia Verde                                    │
+│ Ciruelo Golden Japan                                        │
+│ Ciruelo Claudia Negra                                       │
+│ Higuera Verdal                                              │
+│ Higuera Breva                                               │
+│ Melocotonero Spring Crest                                   │
+│ Melocotonero Federica                                       │
+│ Parra Uva de Mesa                                           │
+│ Mandarino -Plantón joven                                    │
+│ Peral Castell                                               │
+│ Peral Williams                                              │
+│ Peral Conference                                            │
+│ Olivo Cipresino                                             │
+│ Albaricoquero                                               │
+│ Cerezo                                                      │
+│ Ciruelo                                                     │
+│ Granado                                                     │
+│ Higuera                                                     │
+│ Manzano                                                     │
+│ Melocotonero                                                │
+│ Membrillero                                                 │
+│ Arbustos Mix Maceta                                         │
+│ Mimosa Injerto CLASICA Dealbata                             │
+│ Mimosa Semilla Bayleyana                                    │
+│ Mimosa Semilla Espectabilis                                 │
+│ Mimosa Semilla Longifolia                                   │
+│ Mimosa Semilla Floribunda 4 estaciones                      │
+│ Abelia Floribunda                                           │
+│ Callistemom (Mix)                                           │
+│ Corylus Avellana \"Contorta\"                               │
+│ Escallonia (Mix)                                            │
+│ Evonimus Emerald Gayeti                                     │
+│ Evonimus Pulchellus                                         │
+│ Hibiscus Syriacus  \"Helene\" -Blanco-C.rojo                │
+│ Hibiscus Syriacus \"Pink Giant\" Rosa                       │
+│ Lonicera Nitida \"Maigrum\"                                 │
+│ Prunus pisardii                                             │
+│ Weigelia \"Bristol Ruby\"                                   │
+│ Leptospermum formado PIRAMIDE                               │
+│ Leptospermum COPA                                           │
+│ Nerium oleander-CALIDAD \"GARDEN\"                          │
+│ Nerium Oleander Arbusto GRANDE                              │
+│ Nerium oleander COPA  Calibre 6/8                           │
+│ ROSAL TREPADOR                                              │
+│ Solanum Jazminoide                                          │
+│ Wisteria Sinensis  azul, rosa, blanca                       │
+│ Wisteria Sinensis INJERTADAS DECÃ“                          │
+│ Bougamvillea Sanderiana Tutor                               │
+│ Bougamvillea Sanderiana Espaldera                           │
+│ Bougamvillea Sanderiana, 3 tut. piramide                    │
+│ Expositor Árboles clima mediterráneo                        │
+│ Expositor Árboles borde del mar                             │
+│ Brachychiton Acerifolius                                    │
+│ Cassia Corimbosa                                            │
+│ Cassia Corimbosa                                            │
+│ Chitalpa Summer Bells                                       │
+│ Erytrina Kafra                                              │
+│ Eucalyptus Citriodora                                       │
+│ Eucalyptus Ficifolia                                        │
+│ Hibiscus Syriacus  Var. Injertadas 1 Tallo                  │
+│ Lagunaria Patersonii                                        │
+│ Lagunaria Patersonii                                        │
+│ Morus Alba                                                  │
+│ Platanus Acerifolia                                         │
+│ Salix Babylonica  Pendula                                   │
+│ Tamarix  Ramosissima Pink Cascade                           │
+│ Tecoma Stands                                               │
+│ Tecoma Stands                                               │
+│ Tipuana Tipu                                                │
+│ Pleioblastus distichus-Bambú enano                          │
+│ Sasa palmata                                                │
+│ Phylostachys aurea                                          │
+│ Phylostachys Bambusa Spectabilis                            │
+│ Phylostachys biseti                                         │
+│ Pseudosasa japonica (Metake)                                │
+│ Pseudosasa japonica (Metake)                                │
+│ Cedrus Deodara \"Feeling Blue\" Novedad                     │
+│ Juniperus chinensis \"Blue Alps\"                           │
+│ Juniperus Chinensis Stricta                                 │
+│ Juniperus squamata \"Blue Star\"                            │
+│ Juniperus x media Phitzeriana verde                         │
+│ Bismarckia Nobilis                                          │
+│ Brahea Armata                                               │
+│ Brahea Edulis                                               │
+│ Butia Capitata                                              │
+│ Chamaerops Humilis                                          │
+│ Chamaerops Humilis \"Cerifera\"                             │
+│ Chrysalidocarpus Lutescens -ARECA                           │
+│ Cordyline Australis -DRACAENA                               │
+│ Cycas Revoluta                                              │
+│ Dracaena Drago                                              │
+│ Livistonia Decipiens                                        │
+│ Rhaphis Excelsa                                             │
+│ Sabal Minor                                                 │
+│ Trachycarpus Fortunei                                       │
+│ Washingtonia Robusta                                        │
+│ Zamia Furfuracaea                                           │
+└─────────────────────────────────────────────────────────────┘
 **/
 
 -- Devuelve un listado de los productos que han aparecido en un pedido alguna vez.
-
+SELECT distinct p.nombre FROM producto p LEFT JOIN detalle_pedido dp ON p.codigo_producto = dp.codigo_producto WHERE dp.codigo_producto NOT NULL;
 /**
-
+┌─────────────────────────────────────────────────────────────┐
+│                           nombre                            │
+├─────────────────────────────────────────────────────────────┤
+│ Cerezo                                                      │
+│ Camelia japonica                                            │
+│ Pitimini rojo                                               │
+│ Phoenix Canariensis                                         │
+│ Mimosa DEALBATA Gaulois Astier                              │
+│ Naranjo calibre 8/10                                        │
+│ Manzano Starking Delicious                                  │
+│ Kordes Perfect bicolor rojo-amarillo, Roundelay rojo fuerte │
+│ Brachychiton Discolor                                       │
+│ Chamaerops Humilis                                          │
+│ Trachycarpus Fortunei                                       │
+│ Nogal Común                                                 │
+│ Lonicera Pileata                                            │
+│ Philadelphus \"Virginal\"                                   │
+│ Bismarckia Nobilis                                          │
+│ Brahea Edulis                                               │
+│ Butia Capitata                                              │
+│ Ciruelo Santa Rosa                                          │
+│ Ciruelo Reina C. De Ollins                                  │
+│ Expositor Árboles clima continental                         │
+│ Acer Negundo                                                │
+│ Acer platanoides                                            │
+│ Acer Pseudoplatanus                                         │
+│ Peral                                                       │
+│ Limonero 30/40                                              │
+│ Ajedrea                                                     │
+│ Thymus Citriodra (Tomillo limón)                            │
+│ Higuera                                                     │
+│ Níspero                                                     │
+│ Dracaena Drago                                              │
+│ Petrosilium Hortense (Peregil)                              │
+│ Thymus Vulgaris                                             │
+│ Sierra de Poda 400MM                                        │
+│ Pala                                                        │
+│ Nectarina                                                   │
+│ Kunquat  EXTRA con FRUTA                                    │
+│ Kaki                                                        │
+│ Expositor Mimosa Semilla Mix                                │
+│ Pinus Canariensis                                           │
+│ Azadón                                                      │
+│ Granado Mollar de Elche                                     │
+│ Rastrillo de Jardín                                         │
+│ Higuera Napolitana                                          │
+│ Nerium oleander ARBOL Calibre 8/10                          │
+│ Rosal copa                                                  │
+│ Granado                                                     │
+│ Tuja orientalis \"Aurea nana\"                              │
+│ ROSAL TREPADOR                                              │
+│ Peral Blanq. de Aranjuez                                    │
+│ Lavándula Dentata                                           │
+│ Washingtonia Robusta                                        │
+│ Expositor Cítricos Mix                                      │
+│ Limonero calibre 8/10                                       │
+│ Melocotonero                                                │
+│ Calamondin Copa                                             │
+│ Sasa palmata                                                │
+│ Mimosa Semilla Bayleyana                                    │
+│ Camelia japonica ejemplar                                   │
+│ Brachychiton Rupestris                                      │
+│ Melissa                                                     │
+│ Kunquat                                                     │
+│ Ciruelo                                                     │
+│ Manzano                                                     │
+│ Lonicera Nitida                                             │
+│ Olea-Olivos                                                 │
+│ Phylostachys biseti                                         │
+│ Rosal bajo 1Âª -En maceta-inicio brotación                  │
+│ Cerezo Napoleón                                             │
+│ Brahea Armata                                               │
+│ Naranjo 2 años injerto                                      │
+│ Mandarino calibre 8/10                                      │
+│ Lagunaria patersonii  calibre 8/10                          │
+│ Morus Alba  calibre 8/10                                    │
+│ Melocotonero Paraguayo                                      │
+│ Erytrina Kafra                                              │
+│ Tamarix  Ramosissima Pink Cascade                           │
+│ Bougamvillea Sanderiana Tutor                               │
+│ Kaki Rojo Brillante                                         │
+│ Prunus pisardii                                             │
+│ Mejorana                                                    │
+│ Mentha Sativa                                               │
+│ Salvia Mix                                                  │
+│ Santolina Chamaecyparys                                     │
+│ Limonero 2 años injerto                                     │
+│ Nogal                                                       │
+│ Jubaea Chilensis                                            │
+│ Livistonia Australis                                        │
+│ Pinus Halepensis                                            │
+│ Pinus Pinea -Pino Piñonero                                  │
+│ Thuja Esmeralda                                             │
+│ Archontophoenix Cunninghamiana                              │
+│ Beucarnea Recurvata                                         │
+│ Naranjo -Plantón joven 1 año injerto                        │
+│ Hibiscus Syriacus  \"Diana\" -Blanco Puro                   │
+│ Eucalyptus Ficifolia                                        │
+│ Forsytia Intermedia \"Lynwood\"                             │
+│ Rhaphis Humilis                                             │
+│ Callistemom COPA                                            │
+│ Sesbania Punicea                                            │
+│ Cedrus Deodara                                              │
+│ Tuja Occidentalis Woodwardii                                │
+│ Yucca Jewel                                                 │
+│ Landora Amarillo, Rose Gaujard bicolor blanco-rojo          │
+│ Robinia Pseudoacacia Casque Rouge                           │
+│ Manzano Golden Delicious                                    │
+│ Níspero Tanaca                                              │
+│ Albaricoquero                                               │
+│ Membrillero Gigante de Wranja                               │
+│ Mandarino 2 años injerto                                    │
+│ Manzano Reineta                                             │
+│ Ciruelo Friar                                               │
+│ Limonero -Plantón joven                                     │
+│ Melocotonero Amarillo de Agosto                             │
+│ Mimosa Semilla Cyanophylla                                  │
+│ Laurus Nobilis Arbusto - Ramificado Bajo                    │
+│ Viburnum Tinus \"Eve Price\"                                │
+│ Calamondin Copa EXTRA Con FRUTA                             │
+│ Juniperus horizontalis Wiltonii                             │
+│ Bougamvillea roja, naranja                                  │
+└─────────────────────────────────────────────────────────────┘
 **/
 
 
@@ -2570,44 +3115,214 @@ SELECT strftime('%Y', fecha_pago) AS año, SUM(total) AS suma_total_pagos FROM p
 
 
 -- Devuelve el listado de clientes indicando el nombre del cliente y cuántos pedidos ha realizado. Tenga en cuenta que pueden existir clientes que no han realizado ningún pedido.
-
+SELECT c.nombre_cliente, COUNT(p.codigo_pedido) AS total_pedidos FROM cliente c LEFT JOIN pedido p ON c.codigo_cliente = p.codigo_cliente GROUP BY c.codigo_cliente;
 /**
-
+┌────────────────────────────────┬───────────────┐
+│         nombre_cliente         │ total_pedidos │
+├────────────────────────────────┼───────────────┤
+│ GoldFish Garden                │ 11            │
+│ Gardening Associates           │ 9             │
+│ Gerudo Valley                  │ 5             │
+│ Tendo Garden                   │ 5             │
+│ Lasas S.A.                     │ 0             │
+│ Beragua                        │ 5             │
+│ Club Golf Puerta del hierro    │ 0             │
+│ Naturagua                      │ 5             │
+│ DaraDistribuciones             │ 0             │
+│ Madrileña de riegos            │ 0             │
+│ Lasas S.A.                     │ 0             │
+│ Camunas Jardines S.L.          │ 5             │
+│ Dardena S.A.                   │ 5             │
+│ Jardin de Flores               │ 5             │
+│ Flores Marivi                  │ 10            │
+│ Flowers, S.A                   │ 0             │
+│ Naturajardin                   │ 0             │
+│ Golf S.A.                      │ 5             │
+│ Americh Golf Management SL     │ 0             │
+│ Aloha                          │ 0             │
+│ El Prat                        │ 0             │
+│ Sotogrande                     │ 5             │
+│ Vivero Humanes                 │ 0             │
+│ Fuenla City                    │ 0             │
+│ Jardines y Mansiones Cactus SL │ 5             │
+│ Jardinerías Matías SL          │ 5             │
+│ Agrojardin                     │ 5             │
+│ Top Campo                      │ 0             │
+│ Jardineria Sara                │ 10            │
+│ Campohermoso                   │ 0             │
+│ france telecom                 │ 0             │
+│ Musée du Louvre                │ 0             │
+│ Tutifruti S.A                  │ 5             │
+│ Flores S.L.                    │ 5             │
+│ The Magic Garden               │ 0             │
+│ El Jardin Viviente S.L         │ 5             │
+└────────────────────────────────┴───────────────┘
 **/
 
 -- Devuelve un listado con los nombres de los clientes y el total pagado por cada uno de ellos. Tenga en cuenta que pueden existir clientes que no han realizado ningún pago.
+SELECT c.nombre_cliente, SUM(p.total) AS total_pagado FROM cliente c LEFT JOIN pago p ON c.codigo_cliente = p.codigo_cliente WHERE p.codigo_cliente NOT NULL GROUP BY c.codigo_cliente, c.nombre_cliente;
 
 /**
-
+┌────────────────────────────────┬──────────────┐
+│         nombre_cliente         │ total_pagado │
+├────────────────────────────────┼──────────────┤
+│ GoldFish Garden                │ 4000         │
+│ Gardening Associates           │ 10926        │
+│ Gerudo Valley                  │ 81849        │
+│ Tendo Garden                   │ 23794        │
+│ Beragua                        │ 2390         │
+│ Naturagua                      │ 929          │
+│ Camunas Jardines S.L.          │ 2246         │
+│ Dardena S.A.                   │ 4160         │
+│ Jardin de Flores               │ 12081        │
+│ Flores Marivi                  │ 4399         │
+│ Golf S.A.                      │ 232          │
+│ Sotogrande                     │ 272          │
+│ Jardines y Mansiones Cactus SL │ 18846        │
+│ Jardinerías Matías SL          │ 10972        │
+│ Agrojardin                     │ 8489         │
+│ Jardineria Sara                │ 7863         │
+│ Tutifruti S.A                  │ 3321         │
+│ El Jardin Viviente S.L         │ 1171         │
+└────────────────────────────────┴──────────────┘
 **/
 
 -- Devuelve el nombre de los clientes que hayan hecho pedidos en 2008 ordenados alfabéticamente de menor a mayor.
-
+SELECT DISTINCT c.nombre_cliente FROM cliente c JOIN pedido p ON c.codigo_cliente = p.codigo_cliente WHERE strftime('%Y', p.fecha_pedido) = '2008' ORDER BY c.nombre_cliente ASC;
 /**
-
+┌────────────────────────────────┐
+│         nombre_cliente         │
+├────────────────────────────────┤
+│ Camunas Jardines S.L.          │
+│ Dardena S.A.                   │
+│ El Jardin Viviente S.L         │
+│ Flores Marivi                  │
+│ Flores S.L.                    │
+│ Gerudo Valley                  │
+│ GoldFish Garden                │
+│ Jardin de Flores               │
+│ Jardines y Mansiones Cactus SL │
+│ Tendo Garden                   │
+│ Tutifruti S.A                  │
+└────────────────────────────────┘
 **/
 
 -- Devuelve el nombre del cliente, el nombre y primer apellido de su representante de ventas y el número de teléfono de la oficina del representante de ventas, de aquellos clientes que no hayan realizado ningún pago.
-
+SELECT c.nombre_cliente, e.nombre AS nombre_representante, e.apellido1 AS apellido1_representante, o.telefono AS telefono_oficina FROM cliente c LEFT JOIN empleado e ON c.codigo_empleado_rep_ventas = e.codigo_empleado LEFT JOIN oficina o ON e.codigo_oficina = o.codigo_oficina WHERE c.codigo_cliente NOT IN (SELECT DISTINCT codigo_cliente FROM pago);
 /**
-
+┌─────────────────────────────┬──────────────────────┬─────────────────────────┬──────────────────┐
+│       nombre_cliente        │ nombre_representante │ apellido1_representante │ telefono_oficina │
+├─────────────────────────────┼──────────────────────┼─────────────────────────┼──────────────────┤
+│ Lasas S.A.                  │ Mariano              │ López                   │ +34 91 7514487   │
+│ Club Golf Puerta del hierro │ Emmanuel             │ Magaña                  │ +34 93 3561182   │
+│ DaraDistribuciones          │ Emmanuel             │ Magaña                  │ +34 93 3561182   │
+│ Madrileña de riegos         │ Emmanuel             │ Magaña                  │ +34 93 3561182   │
+│ Lasas S.A.                  │ Mariano              │ López                   │ +34 91 7514487   │
+│ Flowers, S.A                │ Felipe               │ Rosas                   │ +34 925 867231   │
+│ Naturajardin                │ Julian               │ Bellinelli              │ +61 2 9264 2451  │
+│ Americh Golf Management SL  │ José Manuel          │ Martinez                │ +34 93 3561182   │
+│ Aloha                       │ José Manuel          │ Martinez                │ +34 93 3561182   │
+│ El Prat                     │ José Manuel          │ Martinez                │ +34 93 3561182   │
+│ Vivero Humanes              │ Julian               │ Bellinelli              │ +61 2 9264 2451  │
+│ Fuenla City                 │ Felipe               │ Rosas                   │ +34 925 867231   │
+│ Top Campo                   │ Felipe               │ Rosas                   │ +34 925 867231   │
+│ Campohermoso                │ Julian               │ Bellinelli              │ +61 2 9264 2451  │
+│ france telecom              │ Lionel               │ Narvaez                 │ +33 14 723 4404  │
+│ Musée du Louvre             │ Lionel               │ Narvaez                 │ +33 14 723 4404  │
+│ Flores S.L.                 │ Michael              │ Bolton                  │ +1 650 219 4782  │
+│ The Magic Garden            │ Michael              │ Bolton                  │ +1 650 219 4782  │
+└─────────────────────────────┴──────────────────────┴─────────────────────────┴──────────────────┘
 **/
 
 -- Devuelve el listado de clientes donde aparezca el nombre del cliente, el nombre y primer apellido de su representante de ventas y la ciudad donde está su oficina.
-
+SELECT c.nombre_cliente, e.nombre AS nombre_representante, e.apellido1 AS apellido1_representante, o.ciudad AS ciudad_oficina FROM cliente c LEFT JOIN empleado e ON c.codigo_empleado_rep_ventas = e.codigo_empleado LEFT JOIN oficina o ON e.codigo_oficina = o.codigo_oficina;
 /**
-
+┌────────────────────────────────┬──────────────────────┬─────────────────────────┬──────────────────────┐
+│         nombre_cliente         │ nombre_representante │ apellido1_representante │    ciudad_oficina    │
+├────────────────────────────────┼──────────────────────┼─────────────────────────┼──────────────────────┤
+│ GoldFish Garden                │ Walter Santiago      │ Sanchez                 │ San Francisco        │
+│ Gardening Associates           │ Walter Santiago      │ Sanchez                 │ San Francisco        │
+│ Gerudo Valley                  │ Lorena               │ Paxton                  │ Boston               │
+│ Tendo Garden                   │ Lorena               │ Paxton                  │ Boston               │
+│ Lasas S.A.                     │ Mariano              │ López                   │ Madrid               │
+│ Beragua                        │ Emmanuel             │ Magaña                  │ Barcelona            │
+│ Club Golf Puerta del hierro    │ Emmanuel             │ Magaña                  │ Barcelona            │
+│ Naturagua                      │ Emmanuel             │ Magaña                  │ Barcelona            │
+│ DaraDistribuciones             │ Emmanuel             │ Magaña                  │ Barcelona            │
+│ Madrileña de riegos            │ Emmanuel             │ Magaña                  │ Barcelona            │
+│ Lasas S.A.                     │ Mariano              │ López                   │ Madrid               │
+│ Camunas Jardines S.L.          │ Mariano              │ López                   │ Madrid               │
+│ Dardena S.A.                   │ Mariano              │ López                   │ Madrid               │
+│ Jardin de Flores               │ Julian               │ Bellinelli              │ Sydney               │
+│ Flores Marivi                  │ Felipe               │ Rosas                   │ Talavera de la Reina │
+│ Flowers, S.A                   │ Felipe               │ Rosas                   │ Talavera de la Reina │
+│ Naturajardin                   │ Julian               │ Bellinelli              │ Sydney               │
+│ Golf S.A.                      │ José Manuel          │ Martinez                │ Barcelona            │
+│ Americh Golf Management SL     │ José Manuel          │ Martinez                │ Barcelona            │
+│ Aloha                          │ José Manuel          │ Martinez                │ Barcelona            │
+│ El Prat                        │ José Manuel          │ Martinez                │ Barcelona            │
+│ Sotogrande                     │ José Manuel          │ Martinez                │ Barcelona            │
+│ Vivero Humanes                 │ Julian               │ Bellinelli              │ Sydney               │
+│ Fuenla City                    │ Felipe               │ Rosas                   │ Talavera de la Reina │
+│ Jardines y Mansiones Cactus SL │ Lucio                │ Campoamor               │ Madrid               │
+│ Jardinerías Matías SL          │ Lucio                │ Campoamor               │ Madrid               │
+│ Agrojardin                     │ Julian               │ Bellinelli              │ Sydney               │
+│ Top Campo                      │ Felipe               │ Rosas                   │ Talavera de la Reina │
+│ Jardineria Sara                │ Felipe               │ Rosas                   │ Talavera de la Reina │
+│ Campohermoso                   │ Julian               │ Bellinelli              │ Sydney               │
+│ france telecom                 │ Lionel               │ Narvaez                 │ Paris                │
+│ Musée du Louvre                │ Lionel               │ Narvaez                 │ Paris                │
+│ Tutifruti S.A                  │ Mariko               │ Kishi                   │ Sydney               │
+│ Flores S.L.                    │ Michael              │ Bolton                  │ San Francisco        │
+│ The Magic Garden               │ Michael              │ Bolton                  │ San Francisco        │
+│ El Jardin Viviente S.L         │ Mariko               │ Kishi                   │ Sydney               │
+└────────────────────────────────┴──────────────────────┴─────────────────────────┴──────────────────────┘
 **/
 
 -- Devuelve el nombre, apellidos, puesto y teléfono de la oficina de aquellos empleados que no sean representante de ventas de ningún cliente.
-
+SELECT e.nombre, e.apellido1||' '||e.apellido2 AS apellidos, e.puesto, o.telefono FROM empleado e LEFT JOIN oficina o ON e.codigo_oficina = o.codigo_oficina WHERE e.codigo_empleado NOT IN (SELECT DISTINCT codigo_empleado_rep_ventas FROM cliente WHERE codigo_empleado_rep_ventas NOT NULL);
 /**
-
+┌─────────────┬───────────────────┬───────────────────────┬─────────────────┐
+│   nombre    │     apellidos     │        puesto         │    telefono     │
+├─────────────┼───────────────────┼───────────────────────┼─────────────────┤
+│ Marcos      │ Magaña Perez      │ Director General      │ +34 925 867231  │
+│ Ruben       │ López Martinez    │ Subdirector Marketing │ +34 925 867231  │
+│ Alberto     │ Soria Carrasco    │ Subdirector Ventas    │ +34 925 867231  │
+│ Maria       │ Solís Jerez       │ Secretaria            │ +34 925 867231  │
+│ Juan Carlos │ Ortiz Serrano     │ Representante Ventas  │ +34 925 867231  │
+│ Carlos      │ Soria Jimenez     │ Director Oficina      │ +34 91 7514487  │
+│ Hilario     │ Rodriguez Huertas │ Representante Ventas  │ +34 91 7514487  │
+│ David       │ Palma Aceituno    │ Representante Ventas  │ +34 93 3561182  │
+│ Oscar       │ Palma Aceituno    │ Representante Ventas  │ +34 93 3561182  │
+│ Francois    │ Fignon            │ Director Oficina      │ +33 14 723 4404 │
+│ Laurent     │ Serra             │ Representante Ventas  │ +33 14 723 4404 │
+│ Hilary      │ Washington        │ Director Oficina      │ +1 215 837 0825 │
+│ Marcus      │ Paxton            │ Representante Ventas  │ +1 215 837 0825 │
+│ Nei         │ Nishikori         │ Director Oficina      │ +81 33 224 5000 │
+│ Narumi      │ Riko              │ Representante Ventas  │ +81 33 224 5000 │
+│ Takuma      │ Nomura            │ Representante Ventas  │ +81 33 224 5000 │
+│ Amy         │ Johnson           │ Director Oficina      │ +44 20 78772041 │
+│ Larry       │ Westfalls         │ Representante Ventas  │ +44 20 78772041 │
+│ John        │ Walton            │ Representante Ventas  │ +44 20 78772041 │
+│ Kevin       │ Fallmer           │ Director Oficina      │ +61 2 9264 2451 │
+└─────────────┴───────────────────┴───────────────────────┴─────────────────┘
 **/
 
 -- Devuelve un listado indicando todas las ciudades donde hay oficinas y el número de empleados que tiene.
-
+SELECT o.ciudad, COUNT(e.codigo_empleado) AS numero_empleados FROM oficina o LEFT JOIN empleado e ON o.codigo_oficina = e.codigo_oficina GROUP BY o.ciudad;
 /**
-
+┌──────────────────────┬──────────────────┐
+│        ciudad        │ numero_empleados │
+├──────────────────────┼──────────────────┤
+│ Barcelona            │ 4                │
+│ Boston               │ 3                │
+│ Londres              │ 3                │
+│ Madrid               │ 4                │
+│ Paris                │ 3                │
+│ San Francisco        │ 2                │
+│ Sydney               │ 3                │
+│ Talavera de la Reina │ 6                │
+│ Tokyo                │ 3                │
+└──────────────────────┴──────────────────┘
 **/
 
