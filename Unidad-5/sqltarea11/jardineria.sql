@@ -1691,111 +1691,725 @@ SELECT e.*, j.nombre AS nombre_jefe FROM empleado e LEFT JOIN empleado j ON e.co
 
 
 -- ¿Cuántos empleados hay en la compañía?
-
+SELECT COUNT(*) AS total_empleados FROM empleado;
 /**
-
+┌─────────────────┐
+│ total_empleados │
+├─────────────────┤
+│ 31              │
+└─────────────────┘
 **/
 
 -- ¿Cuántos clientes tiene cada país?
-
+SELECT pais, COUNT(*) AS total_clientes FROM cliente GROUP BY pais;
 /**
-
+┌────────────────┬────────────────┐
+│      pais      │ total_clientes │
+├────────────────┼────────────────┤
+│ Australia      │ 2              │
+│ France         │ 2              │
+│ Spain          │ 27             │
+│ USA            │ 4              │
+│ United Kingdom │ 1              │
+└────────────────┴────────────────┘
 **/
 
 -- ¿Cuál fue el pago medio en 2009?
-
+SELECT CAST(AVG(total) AS INTEGER) AS pago_medio_2009 FROM pago WHERE strftime('%Y', fecha_pago) = '2009';
 /**
-
+┌─────────────────┐
+│ pago_medio_2009 │
+├─────────────────┤
+│ 4504            │
+└─────────────────┘
 **/
 
 -- ¿Cuántos pedidos hay en cada estado? Ordena el resultado de forma descendente por el número de pedidos.
+SELECT estado, COUNT(*) AS total_pedidos FROM pedido GROUP BY estado ORDER BY total_pedidos DESC;
 /**
-
+┌───────────┬───────────────┐
+│  estado   │ total_pedidos │
+├───────────┼───────────────┤
+│ Entregado │ 61            │
+│ Pendiente │ 30            │
+│ Rechazado │ 24            │
+└───────────┴───────────────┘
 **/
 
 
 -- Calcula el precio de venta del producto más caro y más barato en una misma consulta.
-
+SELECT MAX(precio_venta) AS precio_mas_caro, MIN(precio_venta) AS precio_mas_barato FROM producto;
 /**
-
+┌─────────────────┬───────────────────┐
+│ precio_mas_caro │ precio_mas_barato │
+├─────────────────┼───────────────────┤
+│ 462             │ 1                 │
+└─────────────────┴───────────────────┘
 **/
 
 -- Calcula el número de clientes que tiene la empresa.
-
+SELECT COUNT(*) AS total_clientes FROM cliente;
 /**
-
+┌────────────────┐
+│ total_clientes │
+├────────────────┤
+│ 36             │
+└────────────────┘
 **/
 
 -- ¿Cuántos clientes existen con domicilio en la ciudad de Madrid?
-
+SELECT COUNT(*) AS clientes_madrid FROM cliente WHERE ciudad = 'Madrid';
 /**
-
+┌─────────────────┐
+│ clientes_madrid │
+├─────────────────┤
+│ 11              │
+└─────────────────┘
 **/
 
 -- ¿Calcula cuántos clientes tiene cada una de las ciudades que empiezan por M?
-
+SELECT ciudad, COUNT(*) AS total_clientes FROM cliente WHERE ciudad REGEXP '^M' GROUP BY ciudad;
 /**
-
+┌──────────────────────┬────────────────┐
+│        ciudad        │ total_clientes │
+├──────────────────────┼────────────────┤
+│ Madrid               │ 11             │
+│ Miami                │ 2              │
+│ Montornes del valles │ 1              │
+└──────────────────────┴────────────────┘
 **/
 
 -- Devuelve el nombre de los representantes de ventas y el número de clientes al que atiende cada uno.
-
+SELECT e.nombre, COUNT(c.codigo_cliente) AS clientes_atendidos FROM empleado e LEFT JOIN cliente c ON e.codigo_empleado = c.codigo_empleado_rep_ventas GROUP BY e.codigo_empleado;
 /**
-
+┌─────────────────┬────────────────────┐
+│     nombre      │ clientes_atendidos │
+├─────────────────┼────────────────────┤
+│ Marcos          │ 0                  │
+│ Ruben           │ 0                  │
+│ Alberto         │ 0                  │
+│ Maria           │ 0                  │
+│ Felipe          │ 5                  │
+│ Juan Carlos     │ 0                  │
+│ Carlos          │ 0                  │
+│ Mariano         │ 4                  │
+│ Lucio           │ 2                  │
+│ Hilario         │ 0                  │
+│ Emmanuel        │ 5                  │
+│ José Manuel     │ 5                  │
+│ David           │ 0                  │
+│ Oscar           │ 0                  │
+│ Francois        │ 0                  │
+│ Lionel          │ 2                  │
+│ Laurent         │ 0                  │
+│ Michael         │ 2                  │
+│ Walter Santiago │ 2                  │
+│ Hilary          │ 0                  │
+│ Marcus          │ 0                  │
+│ Lorena          │ 2                  │
+│ Nei             │ 0                  │
+│ Narumi          │ 0                  │
+│ Takuma          │ 0                  │
+│ Amy             │ 0                  │
+│ Larry           │ 0                  │
+│ John            │ 0                  │
+│ Kevin           │ 0                  │
+│ Julian          │ 5                  │
+│ Mariko          │ 2                  │
+└─────────────────┴────────────────────┘
 **/
 
 -- Calcula el número de clientes que no tiene asignado representante de ventas.
-
+SELECT COUNT(*) AS clientes_sin_rep_ventas FROM cliente WHERE codigo_empleado_rep_ventas IS NULL;
 /**
-
+┌─────────────────────────┐
+│ clientes_sin_rep_ventas │
+├─────────────────────────┤
+│ 0                       │
+└─────────────────────────┘
 **/
 
 -- Calcula la fecha del primer y último pago realizado por cada uno de los clientes. El listado deberá mostrar el nombre y los apellidos de cada cliente.
-
+SELECT c.nombre_cliente, c.nombre_contacto, c.apellido_contacto, MIN(pa.fecha_pago) AS primer_pago, MAX(pa.fecha_pago) AS ultimo_pago FROM cliente c LEFT JOIN pago pa ON c.codigo_cliente = pa.codigo_cliente GROUP BY c.codigo_cliente;
 /**
-
+┌────────────────────────────────┬─────────────────┬───────────────────┬─────────────┬─────────────┐
+│         nombre_cliente         │ nombre_contacto │ apellido_contacto │ primer_pago │ ultimo_pago │
+├────────────────────────────────┼─────────────────┼───────────────────┼─────────────┼─────────────┤
+│ GoldFish Garden                │ Daniel G        │ GoldFish          │ 2008-11-10  │ 2008-12-10  │
+│ Gardening Associates           │ Anne            │ Wright            │ 2009-01-16  │ 2009-02-19  │
+│ Gerudo Valley                  │ Link            │ Flaute            │ 2007-01-08  │ 2007-01-08  │
+│ Tendo Garden                   │ Akane           │ Tendo             │ 2006-01-18  │ 2006-01-18  │
+│ Lasas S.A.                     │ Antonio         │ Lasas             │             │             │
+│ Beragua                        │ Jose            │ Bermejo           │ 2009-01-13  │ 2009-01-13  │
+│ Club Golf Puerta del hierro    │ Paco            │ Lopez             │             │             │
+│ Naturagua                      │ Guillermo       │ Rengifo           │ 2009-01-06  │ 2009-01-06  │
+│ DaraDistribuciones             │ David           │ Serrano           │             │             │
+│ Madrileña de riegos            │ Jose            │ Tacaño            │             │             │
+│ Lasas S.A.                     │ Antonio         │ Lasas             │             │             │
+│ Camunas Jardines S.L.          │ Pedro           │ Camunas           │ 2008-08-04  │ 2008-08-04  │
+│ Dardena S.A.                   │ Juan            │ Rodriguez         │ 2008-07-15  │ 2008-07-15  │
+│ Jardin de Flores               │ Javier          │ Villar            │ 2009-01-15  │ 2009-02-15  │
+│ Flores Marivi                  │ Maria           │ Rodriguez         │ 2009-02-16  │ 2009-02-16  │
+│ Flowers, S.A                   │ Beatriz         │ Fernandez         │             │             │
+│ Naturajardin                   │ Victoria        │ Cruz              │             │             │
+│ Golf S.A.                      │ Luis            │ Martinez          │ 2009-03-06  │ 2009-03-06  │
+│ Americh Golf Management SL     │ Mario           │ Suarez            │             │             │
+│ Aloha                          │ Cristian        │ Rodrigez          │             │             │
+│ El Prat                        │ Francisco       │ Camacho           │             │             │
+│ Sotogrande                     │ Maria           │ Santillana        │ 2009-03-26  │ 2009-03-26  │
+│ Vivero Humanes                 │ Federico        │ Gomez             │             │             │
+│ Fuenla City                    │ Tony            │ Muñoz Mena        │             │             │
+│ Jardines y Mansiones Cactus SL │ Eva María       │ Sánchez           │ 2008-03-18  │ 2008-03-18  │
+│ Jardinerías Matías SL          │ Matías          │ San Martín        │ 2009-02-08  │ 2009-02-08  │
+│ Agrojardin                     │ Benito          │ Lopez             │ 2009-01-13  │ 2009-01-13  │
+│ Top Campo                      │ Joseluis        │ Sanchez           │             │             │
+│ Jardineria Sara                │ Sara            │ Marquez           │ 2009-01-16  │ 2009-01-16  │
+│ Campohermoso                   │ Luis            │ Jimenez           │             │             │
+│ france telecom                 │ FraÃ§ois        │ Toulou            │             │             │
+│ Musée du Louvre                │ Pierre          │ Delacroux         │             │             │
+│ Tutifruti S.A                  │ Jacob           │ Jones             │ 2007-10-06  │ 2007-10-06  │
+│ Flores S.L.                    │ Antonio         │ Romero            │             │             │
+│ The Magic Garden               │ Richard         │ Mcain             │             │             │
+│ El Jardin Viviente S.L         │ Justin          │ Smith             │ 2006-05-26  │ 2006-05-26  │
+└────────────────────────────────┴─────────────────┴───────────────────┴─────────────┴─────────────┘
 **/
 
 -- Calcula el número de productos diferentes que hay en cada uno de los pedidos.
-
+SELECT codigo_pedido, COUNT(DISTINCT codigo_producto) AS productos_diferentes FROM detalle_pedido GROUP BY codigo_pedido;
 /**
-
+┌───────────────┬──────────────────────┐
+│ codigo_pedido │ productos_diferentes │
+├───────────────┼──────────────────────┤
+│ 1             │ 5                    │
+│ 2             │ 7                    │
+│ 3             │ 6                    │
+│ 4             │ 8                    │
+│ 8             │ 3                    │
+│ 9             │ 4                    │
+│ 10            │ 3                    │
+│ 11            │ 2                    │
+│ 12            │ 1                    │
+│ 13            │ 3                    │
+│ 14            │ 2                    │
+│ 15            │ 4                    │
+│ 16            │ 2                    │
+│ 17            │ 5                    │
+│ 18            │ 3                    │
+│ 19            │ 5                    │
+│ 20            │ 2                    │
+│ 21            │ 3                    │
+│ 22            │ 1                    │
+│ 23            │ 4                    │
+│ 24            │ 4                    │
+│ 25            │ 3                    │
+│ 26            │ 3                    │
+│ 27            │ 3                    │
+│ 28            │ 3                    │
+│ 29            │ 5                    │
+│ 30            │ 6                    │
+│ 31            │ 3                    │
+│ 32            │ 5                    │
+│ 33            │ 4                    │
+│ 34            │ 4                    │
+│ 35            │ 5                    │
+│ 36            │ 5                    │
+│ 37            │ 3                    │
+│ 38            │ 2                    │
+│ 39            │ 2                    │
+│ 40            │ 2                    │
+│ 41            │ 2                    │
+│ 42            │ 2                    │
+│ 43            │ 1                    │
+│ 44            │ 1                    │
+│ 45            │ 2                    │
+│ 46            │ 2                    │
+│ 47            │ 2                    │
+│ 48            │ 5                    │
+│ 49            │ 3                    │
+│ 50            │ 3                    │
+│ 51            │ 3                    │
+│ 52            │ 1                    │
+│ 53            │ 4                    │
+│ 54            │ 7                    │
+│ 55            │ 5                    │
+│ 56            │ 6                    │
+│ 57            │ 4                    │
+│ 58            │ 4                    │
+│ 59            │ 1                    │
+│ 60            │ 1                    │
+│ 61            │ 1                    │
+│ 62            │ 1                    │
+│ 63            │ 1                    │
+│ 64            │ 1                    │
+│ 65            │ 1                    │
+│ 66            │ 1                    │
+│ 67            │ 1                    │
+│ 68            │ 1                    │
+│ 74            │ 3                    │
+│ 75            │ 3                    │
+│ 76            │ 5                    │
+│ 77            │ 2                    │
+│ 78            │ 4                    │
+│ 79            │ 1                    │
+│ 80            │ 3                    │
+│ 81            │ 1                    │
+│ 82            │ 1                    │
+│ 83            │ 1                    │
+│ 89            │ 6                    │
+│ 90            │ 3                    │
+│ 91            │ 3                    │
+│ 92            │ 3                    │
+│ 93            │ 3                    │
+│ 94            │ 3                    │
+│ 95            │ 3                    │
+│ 96            │ 4                    │
+│ 97            │ 3                    │
+│ 98            │ 5                    │
+│ 99            │ 2                    │
+│ 100           │ 2                    │
+│ 101           │ 2                    │
+│ 102           │ 2                    │
+│ 103           │ 2                    │
+│ 104           │ 2                    │
+│ 105           │ 2                    │
+│ 106           │ 2                    │
+│ 107           │ 2                    │
+│ 108           │ 2                    │
+│ 109           │ 7                    │
+│ 110           │ 3                    │
+│ 111           │ 1                    │
+│ 112           │ 1                    │
+│ 113           │ 1                    │
+│ 114           │ 1                    │
+│ 115           │ 1                    │
+│ 116           │ 5                    │
+│ 117           │ 4                    │
+│ 118           │ 1                    │
+│ 119           │ 1                    │
+│ 120           │ 1                    │
+│ 121           │ 1                    │
+│ 122           │ 1                    │
+│ 123           │ 1                    │
+│ 124           │ 1                    │
+│ 125           │ 1                    │
+│ 126           │ 1                    │
+│ 127           │ 1                    │
+│ 128           │ 2                    │
+└───────────────┴──────────────────────┘
 **/
 
 -- Calcula la suma de la cantidad total de todos los productos que aparecen en cada uno de los pedidos.
-
+SELECT codigo_pedido, SUM(cantidad) AS cantidad_total FROM detalle_pedido GROUP BY codigo_pedido;
 /**
-
+┌───────────────┬────────────────┐
+│ codigo_pedido │ cantidad_total │
+├───────────────┼────────────────┤
+│ 1             │ 113            │
+│ 2             │ 164            │
+│ 3             │ 232            │
+│ 4             │ 179            │
+│ 8             │ 14             │
+│ 9             │ 625            │
+│ 10            │ 40             │
+│ 11            │ 260            │
+│ 12            │ 290            │
+│ 13            │ 22             │
+│ 14            │ 21             │
+│ 15            │ 21             │
+│ 16            │ 22             │
+│ 17            │ 25             │
+│ 18            │ 16             │
+│ 19            │ 41             │
+│ 20            │ 22             │
+│ 21            │ 30             │
+│ 22            │ 1              │
+│ 23            │ 194            │
+│ 24            │ 19             │
+│ 25            │ 29             │
+│ 26            │ 27             │
+│ 27            │ 84             │
+│ 28            │ 12             │
+│ 29            │ 40             │
+│ 30            │ 33             │
+│ 31            │ 32             │
+│ 32            │ 40             │
+│ 33            │ 905            │
+│ 34            │ 112            │
+│ 35            │ 178            │
+│ 36            │ 28             │
+│ 37            │ 245            │
+│ 38            │ 7              │
+│ 39            │ 9              │
+│ 40            │ 12             │
+│ 41            │ 10             │
+│ 42            │ 4              │
+│ 43            │ 9              │
+│ 44            │ 5              │
+│ 45            │ 10             │
+│ 46            │ 12             │
+│ 47            │ 14             │
+│ 48            │ 147            │
+│ 49            │ 65             │
+│ 50            │ 71             │
+│ 51            │ 200            │
+│ 52            │ 10             │
+│ 53            │ 10             │
+│ 54            │ 69             │
+│ 55            │ 20             │
+│ 56            │ 22             │
+│ 57            │ 17             │
+│ 58            │ 364            │
+│ 59            │ 10             │
+│ 60            │ 10             │
+│ 61            │ 10             │
+│ 62            │ 10             │
+│ 63            │ 10             │
+│ 64            │ 10             │
+│ 65            │ 10             │
+│ 66            │ 10             │
+│ 67            │ 10             │
+│ 68            │ 10             │
+│ 74            │ 91             │
+│ 75            │ 130            │
+│ 76            │ 374            │
+│ 77            │ 49             │
+│ 78            │ 153            │
+│ 79            │ 50             │
+│ 80            │ 162            │
+│ 81            │ 30             │
+│ 82            │ 34             │
+│ 83            │ 30             │
+│ 89            │ 47             │
+│ 90            │ 41             │
+│ 91            │ 101            │
+│ 92            │ 62             │
+│ 93            │ 79             │
+│ 94            │ 124            │
+│ 95            │ 20             │
+│ 96            │ 36             │
+│ 97            │ 36             │
+│ 98            │ 62             │
+│ 99            │ 45             │
+│ 100           │ 60             │
+│ 101           │ 209            │
+│ 102           │ 55             │
+│ 103           │ 64             │
+│ 104           │ 122            │
+│ 105           │ 48             │
+│ 106           │ 278            │
+│ 107           │ 158            │
+│ 108           │ 112            │
+│ 109           │ 69             │
+│ 110           │ 21             │
+│ 111           │ 10             │
+│ 112           │ 10             │
+│ 113           │ 10             │
+│ 114           │ 10             │
+│ 115           │ 10             │
+│ 116           │ 78             │
+│ 117           │ 24             │
+│ 118           │ 10             │
+│ 119           │ 10             │
+│ 120           │ 10             │
+│ 121           │ 10             │
+│ 122           │ 10             │
+│ 123           │ 10             │
+│ 124           │ 10             │
+│ 125           │ 10             │
+│ 126           │ 10             │
+│ 127           │ 10             │
+│ 128           │ 33             │
+└───────────────┴────────────────┘
 **/
 
 -- Devuelve un listado de los 20 productos más vendidos y el número total de unidades que se han vendido de cada uno. El listado deberá estar ordenado por el número total de unidades vendidas.
-
+SELECT p.nombre, p.codigo_producto, SUM(dp.cantidad) AS total_unidades_vendidas FROM producto p JOIN detalle_pedido dp ON p.codigo_producto = dp.codigo_producto GROUP BY p.codigo_producto ORDER BY total_unidades_vendidas DESC LIMIT 20;
 /**
-
+┌────────────────────────────────────────────┬─────────────────┬─────────────────────────┐
+│                   nombre                   │ codigo_producto │ total_unidades_vendidas │
+├────────────────────────────────────────────┼─────────────────┼─────────────────────────┤
+│ Thymus Vulgaris                            │ AR-009          │ 961                     │
+│ Thymus Citriodra (Tomillo limón)           │ AR-008          │ 455                     │
+│ Rosal bajo 1Âª -En maceta-inicio brotación │ FR-17           │ 423                     │
+│ Petrosilium Hortense (Peregil)             │ AR-006          │ 291                     │
+│ Cerezo                                     │ FR-67           │ 285                     │
+│ Trachycarpus Fortunei                      │ OR-247          │ 279                     │
+│ Acer Pseudoplatanus                        │ OR-157          │ 262                     │
+│ Chamaerops Humilis                         │ OR-227          │ 236                     │
+│ Tuja orientalis \"Aurea nana\"             │ OR-208          │ 221                     │
+│ Azadón                                     │ 30310           │ 220                     │
+│ Brahea Armata                              │ OR-214          │ 212                     │
+│ Kaki Rojo Brillante                        │ FR-57           │ 203                     │
+│ Robinia Pseudoacacia Casque Rouge          │ OR-177          │ 150                     │
+│ Ajedrea                                    │ AR-001          │ 135                     │
+│ Limonero 30/40                             │ FR-11           │ 131                     │
+│ Lavándula Dentata                          │ AR-002          │ 128                     │
+│ Nerium oleander ARBOL Calibre 8/10         │ OR-136          │ 127                     │
+│ Nogal Común                                │ FR-48           │ 120                     │
+│ Cerezo Napoleón                            │ FR-29           │ 120                     │
+│ Nectarina                                  │ FR-100          │ 114                     │
+└────────────────────────────────────────────┴─────────────────┴─────────────────────────┘
 **/
 
 -- La facturación que ha tenido la empresa en toda la historia, indicando la base imponible, el IGIC y el total facturado. La base imponible se calcula sumando el coste del producto por el número de unidades vendidas de la tabla detalle_pedido. El IGIC es el 7 % de la base imponible, y el total la suma de los dos campos anteriores.
-
+SELECT SUM(dp.cantidad * p.precio_venta) AS base_imponible, SUM(dp.cantidad * p.precio_venta) * 0.07 AS igic, SUM(dp.cantidad * p.precio_venta) + (SUM(dp.cantidad * p.precio_venta) * 0.07) AS total_facturado FROM detalle_pedido dp JOIN producto p ON dp.codigo_producto = p.codigo_producto;
 /**
-
+┌────────────────┬──────────┬─────────────────┐
+│ base_imponible │   igic   │ total_facturado │
+├────────────────┼──────────┼─────────────────┤
+│ 275827         │ 19307.89 │ 295134.89       │
+└────────────────┴──────────┴─────────────────┘
 **/
 
 -- La misma información que en la pregunta anterior, pero agrupada por código de producto.
-
+SELECT p.codigo_producto, SUM(dp.cantidad * p.precio_venta) AS base_imponible, SUM(dp.cantidad * p.precio_venta) * 0.07 AS igic, SUM(dp.cantidad * p.precio_venta) + (SUM(dp.cantidad * p.precio_venta) * 0.07) AS total_facturado FROM detalle_pedido dp JOIN producto p ON dp.codigo_producto = p.codigo_producto GROUP BY p.codigo_producto;
 /**
-
+┌─────────────────┬────────────────┬─────────┬─────────────────┐
+│ codigo_producto │ base_imponible │  igic   │ total_facturado │
+├─────────────────┼────────────────┼─────────┼─────────────────┤
+│ 11679           │ 630            │ 44.1    │ 674.1           │
+│ 21636           │ 560            │ 39.2    │ 599.2           │
+│ 22225           │ 984            │ 68.88   │ 1052.88         │
+│ 30310           │ 2640           │ 184.8   │ 2824.8          │
+│ AR-001          │ 135            │ 9.45    │ 144.45          │
+│ AR-002          │ 128            │ 8.96    │ 136.96          │
+│ AR-003          │ 17             │ 1.19    │ 18.19           │
+│ AR-004          │ 30             │ 2.1     │ 32.1            │
+│ AR-005          │ 21             │ 1.47    │ 22.47           │
+│ AR-006          │ 291            │ 20.37   │ 311.37          │
+│ AR-007          │ 9              │ 0.63    │ 9.63            │
+│ AR-008          │ 455            │ 31.85   │ 486.85          │
+│ AR-009          │ 961            │ 67.27   │ 1028.27         │
+│ AR-010          │ 10             │ 0.7     │ 10.7            │
+│ FR-1            │ 168            │ 11.76   │ 179.76          │
+│ FR-10           │ 119            │ 8.33    │ 127.33          │
+│ FR-100          │ 1254           │ 87.78   │ 1341.78         │
+│ FR-101          │ 247            │ 17.29   │ 264.29          │
+│ FR-102          │ 666            │ 46.62   │ 712.62          │
+│ FR-103          │ 25             │ 1.75    │ 26.75           │
+│ FR-105          │ 280            │ 19.6    │ 299.6           │
+│ FR-106          │ 913            │ 63.91   │ 976.91          │
+│ FR-107          │ 1100           │ 77.0    │ 1177.0          │
+│ FR-108          │ 576            │ 40.32   │ 616.32          │
+│ FR-11           │ 13100          │ 917.0   │ 14017.0         │
+│ FR-12           │ 672            │ 47.04   │ 719.04          │
+│ FR-13           │ 741            │ 51.87   │ 792.87          │
+│ FR-15           │ 225            │ 15.75   │ 240.75          │
+│ FR-16           │ 45             │ 3.15    │ 48.15           │
+│ FR-17           │ 846            │ 59.22   │ 905.22          │
+│ FR-18           │ 108            │ 7.56    │ 115.56          │
+│ FR-2            │ 6              │ 0.42    │ 6.42            │
+│ FR-22           │ 40             │ 2.8     │ 42.8            │
+│ FR-23           │ 64             │ 4.48    │ 68.48           │
+│ FR-29           │ 960            │ 67.2    │ 1027.2          │
+│ FR-3            │ 497            │ 34.79   │ 531.79          │
+│ FR-31           │ 96             │ 6.72    │ 102.72          │
+│ FR-33           │ 216            │ 15.12   │ 231.12          │
+│ FR-34           │ 336            │ 23.52   │ 359.52          │
+│ FR-36           │ 621            │ 43.47   │ 664.47          │
+│ FR-37           │ 45             │ 3.15    │ 48.15           │
+│ FR-4            │ 2552           │ 178.64  │ 2730.64         │
+│ FR-40           │ 392            │ 27.44   │ 419.44          │
+│ FR-41           │ 96             │ 6.72    │ 102.72          │
+│ FR-42           │ 96             │ 6.72    │ 102.72          │
+│ FR-43           │ 48             │ 3.36    │ 51.36           │
+│ FR-45           │ 112            │ 7.84    │ 119.84          │
+│ FR-47           │ 440            │ 30.8    │ 470.8           │
+│ FR-48           │ 1080           │ 75.6    │ 1155.6          │
+│ FR-53           │ 744            │ 52.08   │ 796.08          │
+│ FR-54           │ 351            │ 24.57   │ 375.57          │
+│ FR-56           │ 128            │ 8.96    │ 136.96          │
+│ FR-57           │ 1827           │ 127.89  │ 1954.89         │
+│ FR-58           │ 561            │ 39.27   │ 600.27          │
+│ FR-6            │ 112            │ 7.84    │ 119.84          │
+│ FR-60           │ 352            │ 24.64   │ 376.64          │
+│ FR-64           │ 110            │ 7.7     │ 117.7           │
+│ FR-66           │ 245            │ 17.15   │ 262.15          │
+│ FR-67           │ 19950          │ 1396.5  │ 21346.5         │
+│ FR-69           │ 1911           │ 133.77  │ 2044.77         │
+│ FR-7            │ 348            │ 24.36   │ 372.36          │
+│ FR-71           │ 220            │ 15.4    │ 235.4           │
+│ FR-72           │ 128            │ 8.96    │ 136.96          │
+│ FR-75           │ 224            │ 15.68   │ 239.68          │
+│ FR-77           │ 1050           │ 73.5    │ 1123.5          │
+│ FR-78           │ 30             │ 2.1     │ 32.1            │
+│ FR-79           │ 946            │ 66.22   │ 1012.22         │
+│ FR-8            │ 108            │ 7.56    │ 115.56          │
+│ FR-80           │ 32             │ 2.24    │ 34.24           │
+│ FR-81           │ 147            │ 10.29   │ 157.29          │
+│ FR-82           │ 980            │ 68.6    │ 1048.6          │
+│ FR-84           │ 143            │ 10.01   │ 153.01          │
+│ FR-85           │ 5320           │ 372.4   │ 5692.4          │
+│ FR-86           │ 22             │ 1.54    │ 23.54           │
+│ FR-87           │ 1584           │ 110.88  │ 1694.88         │
+│ FR-89           │ 490            │ 34.3    │ 524.3           │
+│ FR-9            │ 232            │ 16.24   │ 248.24          │
+│ FR-90           │ 280            │ 19.6    │ 299.6           │
+│ FR-91           │ 2400           │ 168.0   │ 2568.0          │
+│ FR-94           │ 3552           │ 248.64  │ 3800.64         │
+│ OR-101          │ 144            │ 10.08   │ 154.08          │
+│ OR-102          │ 522            │ 36.54   │ 558.54          │
+│ OR-104          │ 200            │ 14.0    │ 214.0           │
+│ OR-115          │ 63             │ 4.41    │ 67.41           │
+│ OR-116          │ 98             │ 6.86    │ 104.86          │
+│ OR-119          │ 50             │ 3.5     │ 53.5            │
+│ OR-120          │ 25             │ 1.75    │ 26.75           │
+│ OR-122          │ 160            │ 11.2    │ 171.2           │
+│ OR-123          │ 70             │ 4.9     │ 74.9            │
+│ OR-125          │ 15             │ 1.05    │ 16.05           │
+│ OR-127          │ 280            │ 19.6    │ 299.6           │
+│ OR-128          │ 2842           │ 198.94  │ 3040.94         │
+│ OR-129          │ 330            │ 23.1    │ 353.1           │
+│ OR-130          │ 216            │ 15.12   │ 231.12          │
+│ OR-136          │ 2286           │ 160.02  │ 2446.02         │
+│ OR-139          │ 320            │ 22.4    │ 342.4           │
+│ OR-140          │ 200            │ 14.0    │ 214.0           │
+│ OR-141          │ 180            │ 12.6    │ 192.6           │
+│ OR-146          │ 68             │ 4.76    │ 72.76           │
+│ OR-147          │ 42             │ 2.94    │ 44.94           │
+│ OR-150          │ 36             │ 2.52    │ 38.52           │
+│ OR-152          │ 18             │ 1.26    │ 19.26           │
+│ OR-155          │ 24             │ 1.68    │ 25.68           │
+│ OR-156          │ 330            │ 23.1    │ 353.1           │
+│ OR-157          │ 2620           │ 183.4   │ 2803.4          │
+│ OR-159          │ 132            │ 9.24    │ 141.24          │
+│ OR-160          │ 100            │ 7.0     │ 107.0           │
+│ OR-165          │ 30             │ 2.1     │ 32.1            │
+│ OR-168          │ 20             │ 1.4     │ 21.4            │
+│ OR-172          │ 1602           │ 112.14  │ 1714.14         │
+│ OR-174          │ 432            │ 30.24   │ 462.24          │
+│ OR-176          │ 380            │ 26.6    │ 406.6           │
+│ OR-177          │ 2250           │ 157.5   │ 2407.5          │
+│ OR-179          │ 30             │ 2.1     │ 32.1            │
+│ OR-181          │ 360            │ 25.2    │ 385.2           │
+│ OR-186          │ 240            │ 16.8    │ 256.8           │
+│ OR-188          │ 100            │ 7.0     │ 107.0           │
+│ OR-193          │ 100            │ 7.0     │ 107.0           │
+│ OR-196          │ 280            │ 19.6    │ 299.6           │
+│ OR-200          │ 40             │ 2.8     │ 42.8            │
+│ OR-203          │ 100            │ 7.0     │ 107.0           │
+│ OR-204          │ 500            │ 35.0    │ 535.0           │
+│ OR-205          │ 100            │ 7.0     │ 107.0           │
+│ OR-206          │ 25             │ 1.75    │ 26.75           │
+│ OR-207          │ 16             │ 1.12    │ 17.12           │
+│ OR-208          │ 884            │ 61.88   │ 945.88          │
+│ OR-209          │ 500            │ 35.0    │ 535.0           │
+│ OR-210          │ 3120           │ 218.4   │ 3338.4          │
+│ OR-211          │ 4130           │ 289.1   │ 4419.1          │
+│ OR-213          │ 9310           │ 651.7   │ 9961.7          │
+│ OR-214          │ 2120           │ 148.4   │ 2268.4          │
+│ OR-217          │ 960            │ 67.2    │ 1027.2          │
+│ OR-218          │ 950            │ 66.5    │ 1016.5          │
+│ OR-222          │ 1827           │ 127.89  │ 1954.89         │
+│ OR-225          │ 840            │ 58.8    │ 898.8           │
+│ OR-226          │ 570            │ 39.9    │ 609.9           │
+│ OR-227          │ 15104          │ 1057.28 │ 16161.28        │
+│ OR-234          │ 3520           │ 246.4   │ 3766.4          │
+│ OR-236          │ 2205           │ 154.35  │ 2359.35         │
+│ OR-237          │ 950            │ 66.5    │ 1016.5          │
+│ OR-240          │ 468            │ 32.76   │ 500.76          │
+│ OR-241          │ 475            │ 33.25   │ 508.25          │
+│ OR-243          │ 128            │ 8.96    │ 136.96          │
+│ OR-247          │ 128898         │ 9022.86 │ 137920.86       │
+│ OR-249          │ 150            │ 10.5    │ 160.5           │
+│ OR-250          │ 30             │ 2.1     │ 32.1            │
+│ OR-99           │ 532            │ 37.24   │ 569.24          │
+└─────────────────┴────────────────┴─────────┴─────────────────┘
 **/
 
 -- La misma información que en la pregunta anterior, pero agrupada por código de producto filtrada por los códigos que empiecen por OR.
-
+SELECT p.codigo_producto, SUM(dp.cantidad * p.precio_venta) AS base_imponible, SUM(dp.cantidad * p.precio_venta) * 0.07 AS igic, SUM(dp.cantidad * p.precio_venta) + (SUM(dp.cantidad * p.precio_venta) * 0.07) AS total_facturado FROM detalle_pedido dp JOIN producto p ON dp.codigo_producto = p.codigo_producto WHERE p.codigo_producto REGEXP '^OR' GROUP BY p.codigo_producto;
 /**
-
+┌─────────────────┬────────────────┬─────────┬─────────────────┐
+│ codigo_producto │ base_imponible │  igic   │ total_facturado │
+├─────────────────┼────────────────┼─────────┼─────────────────┤
+│ OR-101          │ 144            │ 10.08   │ 154.08          │
+│ OR-102          │ 522            │ 36.54   │ 558.54          │
+│ OR-104          │ 200            │ 14.0    │ 214.0           │
+│ OR-115          │ 63             │ 4.41    │ 67.41           │
+│ OR-116          │ 98             │ 6.86    │ 104.86          │
+│ OR-119          │ 50             │ 3.5     │ 53.5            │
+│ OR-120          │ 25             │ 1.75    │ 26.75           │
+│ OR-122          │ 160            │ 11.2    │ 171.2           │
+│ OR-123          │ 70             │ 4.9     │ 74.9            │
+│ OR-125          │ 15             │ 1.05    │ 16.05           │
+│ OR-127          │ 280            │ 19.6    │ 299.6           │
+│ OR-128          │ 2842           │ 198.94  │ 3040.94         │
+│ OR-129          │ 330            │ 23.1    │ 353.1           │
+│ OR-130          │ 216            │ 15.12   │ 231.12          │
+│ OR-136          │ 2286           │ 160.02  │ 2446.02         │
+│ OR-139          │ 320            │ 22.4    │ 342.4           │
+│ OR-140          │ 200            │ 14.0    │ 214.0           │
+│ OR-141          │ 180            │ 12.6    │ 192.6           │
+│ OR-146          │ 68             │ 4.76    │ 72.76           │
+│ OR-147          │ 42             │ 2.94    │ 44.94           │
+│ OR-150          │ 36             │ 2.52    │ 38.52           │
+│ OR-152          │ 18             │ 1.26    │ 19.26           │
+│ OR-155          │ 24             │ 1.68    │ 25.68           │
+│ OR-156          │ 330            │ 23.1    │ 353.1           │
+│ OR-157          │ 2620           │ 183.4   │ 2803.4          │
+│ OR-159          │ 132            │ 9.24    │ 141.24          │
+│ OR-160          │ 100            │ 7.0     │ 107.0           │
+│ OR-165          │ 30             │ 2.1     │ 32.1            │
+│ OR-168          │ 20             │ 1.4     │ 21.4            │
+│ OR-172          │ 1602           │ 112.14  │ 1714.14         │
+│ OR-174          │ 432            │ 30.24   │ 462.24          │
+│ OR-176          │ 380            │ 26.6    │ 406.6           │
+│ OR-177          │ 2250           │ 157.5   │ 2407.5          │
+│ OR-179          │ 30             │ 2.1     │ 32.1            │
+│ OR-181          │ 360            │ 25.2    │ 385.2           │
+│ OR-186          │ 240            │ 16.8    │ 256.8           │
+│ OR-188          │ 100            │ 7.0     │ 107.0           │
+│ OR-193          │ 100            │ 7.0     │ 107.0           │
+│ OR-196          │ 280            │ 19.6    │ 299.6           │
+│ OR-200          │ 40             │ 2.8     │ 42.8            │
+│ OR-203          │ 100            │ 7.0     │ 107.0           │
+│ OR-204          │ 500            │ 35.0    │ 535.0           │
+│ OR-205          │ 100            │ 7.0     │ 107.0           │
+│ OR-206          │ 25             │ 1.75    │ 26.75           │
+│ OR-207          │ 16             │ 1.12    │ 17.12           │
+│ OR-208          │ 884            │ 61.88   │ 945.88          │
+│ OR-209          │ 500            │ 35.0    │ 535.0           │
+│ OR-210          │ 3120           │ 218.4   │ 3338.4          │
+│ OR-211          │ 4130           │ 289.1   │ 4419.1          │
+│ OR-213          │ 9310           │ 651.7   │ 9961.7          │
+│ OR-214          │ 2120           │ 148.4   │ 2268.4          │
+│ OR-217          │ 960            │ 67.2    │ 1027.2          │
+│ OR-218          │ 950            │ 66.5    │ 1016.5          │
+│ OR-222          │ 1827           │ 127.89  │ 1954.89         │
+│ OR-225          │ 840            │ 58.8    │ 898.8           │
+│ OR-226          │ 570            │ 39.9    │ 609.9           │
+│ OR-227          │ 15104          │ 1057.28 │ 16161.28        │
+│ OR-234          │ 3520           │ 246.4   │ 3766.4          │
+│ OR-236          │ 2205           │ 154.35  │ 2359.35         │
+│ OR-237          │ 950            │ 66.5    │ 1016.5          │
+│ OR-240          │ 468            │ 32.76   │ 500.76          │
+│ OR-241          │ 475            │ 33.25   │ 508.25          │
+│ OR-243          │ 128            │ 8.96    │ 136.96          │
+│ OR-247          │ 128898         │ 9022.86 │ 137920.86       │
+│ OR-249          │ 150            │ 10.5    │ 160.5           │
+│ OR-250          │ 30             │ 2.1     │ 32.1            │
+│ OR-99           │ 532            │ 37.24   │ 569.24          │
+└─────────────────┴────────────────┴─────────┴─────────────────┘
 **/
 
 -- Lista las ventas totales de los productos que hayan facturado más de __3000 euros__. Se mostrará el nombre, unidades vendidas, total facturado y total facturado con impuestos (7% IGIC).
-
+SELECT p.nombre, SUM(dp.cantidad) AS unidades_vendidas, SUM(dp.cantidad * p.precio_venta) AS total_facturado, SUM(dp.cantidad * p.precio_venta) + (SUM(dp.cantidad * p.precio_venta) * 0.07) AS total_facturado_con_igic FROM detalle_pedido dp JOIN producto p ON dp.codigo_producto = p.codigo_producto GROUP BY p.nombre HAVING total_facturado > 3000;
 /**
-
+┌───────────────────────────┬───────────────────┬─────────────────┬──────────────────────────┐
+│          nombre           │ unidades_vendidas │ total_facturado │ total_facturado_con_igic │
+├───────────────────────────┼───────────────────┼─────────────────┼──────────────────────────┤
+│ Beucarnea Recurvata       │ 150               │ 7250            │ 7757.5                   │
+│ Bismarckia Nobilis        │ 35                │ 9310            │ 9961.7                   │
+│ Camelia japonica ejemplar │ 32                │ 3172            │ 3394.04                  │
+│ Cerezo                    │ 316               │ 22216           │ 23771.12                 │
+│ Chamaerops Humilis        │ 335               │ 16514           │ 17669.98                 │
+│ Dracaena Drago            │ 55                │ 3520            │ 3766.4                   │
+│ Kaki                      │ 87                │ 5463            │ 5845.41                  │
+│ Limonero 30/40            │ 131               │ 13100           │ 14017.0                  │
+│ Melocotonero              │ 111               │ 3552            │ 3800.64                  │
+│ Trachycarpus Fortunei     │ 279               │ 128898          │ 137920.86                │
+└───────────────────────────┴───────────────────┴─────────────────┴──────────────────────────┘
 **/
 
 -- Muestre la suma total de todos los pagos que se realizaron para cada uno de los años que aparecen en la tabla pagos.
