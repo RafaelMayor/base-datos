@@ -2413,9 +2413,16 @@ SELECT p.nombre, SUM(dp.cantidad) AS unidades_vendidas, SUM(dp.cantidad * p.prec
 **/
 
 -- Muestre la suma total de todos los pagos que se realizaron para cada uno de los años que aparecen en la tabla pagos.
-
+SELECT strftime('%Y', fecha_pago) AS año, SUM(total) AS suma_total_pagos FROM pago GROUP BY año;
 /**
-
+┌──────┬──────────────────┐
+│ año  │ suma_total_pagos │
+├──────┼──────────────────┤
+│ 2006 │ 24965            │
+│ 2007 │ 85170            │
+│ 2008 │ 29252            │
+│ 2009 │ 58553            │
+└──────┴──────────────────┘
 **/
 
 
