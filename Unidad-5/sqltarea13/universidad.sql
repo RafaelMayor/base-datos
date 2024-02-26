@@ -283,21 +283,34 @@ select dp.nombre as nombre_departamento, apellido1, apellido2, p.nombre from per
 **/
 
 -- Devuelve un listado con los profesores que no están asociados a un departamento.
-
+select p.nombre, apellido1||' '||apellido2 as apellidos from persona p, profesor pr where p.id = pr.id_profesor and pr.id_departamento is null;
 /**
-
+No devuelve nada porque todos los profesores están asociados a un departamento.
 **/
 
 -- Devuelve un listado con los departamentos que no tienen profesores asociados.
-
+select nombre from departamento dp, profesor pr where dp.id = pr.id_departamento and id_profesor is null;
 /**
-
+No devuelve nada porque todos los departamentos tienen al menos un profesor asociado.
 **/
 
 -- Devuelve un listado con los profesores que no imparten ninguna asignatura.
-
+select p.nombre, apellido1||' '||apellido2 as apellidos from persona p, profesor pr where p.id = pr.id_profesor and id_profesor not in (select a.id_profesor from asignatura a, profesor pr where a.id_profesor = pr.id_profesor );
 /**
-
+┌───────────┬───────────────────────┐
+│  nombre   │       apellidos       │
+├───────────┼───────────────────────┤
+│ David     │ Schmidt Fisher        │
+│ Cristina  │ Lemke Rutherford      │
+│ Esther    │ Spencer Lakin         │
+│ Carmen    │ Streich Hirthe        │
+│ Alfredo   │ Stiedemann Morissette │
+│ Alejandro │ Kohler Schoen         │
+│ Antonio   │ Fahey Considine       │
+│ Guillermo │ Ruecker Upton         │
+│ Micaela   │ Monahan Murray        │
+│ Francesca │ Schowalter Muller     │
+└───────────┴───────────────────────┘
 **/
 
 -- Devuelve un listado con las asignaturas que no tienen un profesor asignado.
