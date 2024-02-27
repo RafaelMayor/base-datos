@@ -314,15 +314,94 @@ select p.nombre, apellido1||' '||apellido2 as apellidos from persona p, profesor
 **/
 
 -- Devuelve un listado con las asignaturas que no tienen un profesor asignado.
-
+select nombre from asignatura where id_profesor is null;
 /**
-
+┌────────────────────────────────────────────────────────────────────────┐
+│                                 nombre                                 │
+├────────────────────────────────────────────────────────────────────────┤
+│ Ingeniería de Requisitos                                               │
+│ Integración de las Tecnologías de la Información en las Organizaciones │
+│ Modelado y Diseño del Software 1                                       │
+│ Multiprocesadores                                                      │
+│ Seguridad y cumplimiento normativo                                     │
+│ Sistema de Información para las Organizaciones                         │
+│ Tecnologías web                                                        │
+│ Teoría de códigos y criptografía                                       │
+│ Administración de bases de datos                                       │
+│ Herramientas y Métodos de Ingeniería del Software                      │
+│ Informática industrial y robótica                                      │
+│ Ingeniería de Sistemas de Información                                  │
+│ Modelado y Diseño del Software 2                                       │
+│ Negocio Electrónico                                                    │
+│ Periféricos e interfaces                                               │
+│ Sistemas de tiempo real                                                │
+│ Tecnologías de acceso a red                                            │
+│ Tratamiento digital de imágenes                                        │
+│ Administración de redes y sistemas operativos                          │
+│ Almacenes de Datos                                                     │
+│ Fiabilidad y Gestión de Riesgos                                        │
+│ Líneas de Productos Software                                           │
+│ Procesos de Ingeniería del Software 1                                  │
+│ Tecnologías multimedia                                                 │
+│ Análisis y planificación de las TI                                     │
+│ Desarrollo Rápido de Aplicaciones                                      │
+│ Gestión de la Calidad y de la Innovación Tecnológica                   │
+│ Inteligencia del Negocio                                               │
+│ Procesos de Ingeniería del Software 2                                  │
+│ Seguridad Informática                                                  │
+│ Biologia celular                                                       │
+│ Física                                                                 │
+│ Matemáticas I                                                          │
+│ Química general                                                        │
+│ Química orgánica                                                       │
+│ Biología vegetal y animal                                              │
+│ Bioquímica                                                             │
+│ Genética                                                               │
+│ Matemáticas II                                                         │
+│ Microbiología                                                          │
+│ Botánica agrícola                                                      │
+│ Fisiología vegetal                                                     │
+│ Genética molecular                                                     │
+│ Ingeniería bioquímica                                                  │
+│ Termodinámica y cinética química aplicada                              │
+│ Biorreactores                                                          │
+│ Biotecnología microbiana                                               │
+│ Ingeniería genética                                                    │
+│ Inmunología                                                            │
+│ Virología                                                              │
+│ Bases moleculares del desarrollo vegetal                               │
+│ Fisiología animal                                                      │
+│ Metabolismo y biosíntesis de biomoléculas                              │
+│ Operaciones de separación                                              │
+│ Patología molecular de plantas                                         │
+│ Técnicas instrumentales básicas                                        │
+│ Bioinformática                                                         │
+│ Biotecnología de los productos hortofrutículas                         │
+│ Biotecnología vegetal                                                  │
+│ Genómica y proteómica                                                  │
+│ Procesos biotecnológicos                                               │
+│ Técnicas instrumentales avanzadas                                      │
+└────────────────────────────────────────────────────────────────────────┘
 **/
 
 -- Devuelve un listado con todos los departamentos que tienen alguna asignatura que no se haya impartido en ningún curso escolar. El resultado debe mostrar el nombre del departamento y el nombre de la asignatura que no se haya impartido nunca.
-
+select dp.nombre, a.nombre from departamento dp, profesor pr, asignatura a where dp.id = pr.id_departamento and pr.id_profesor = a.id_profesor and a.id not in (select id_asignatura from alumno_se_matricula_asignatura);
 /**
-
+┌─────────────┬───────────────────────────────────────────────────┐
+│   nombre    │                      nombre                       │
+├─────────────┼───────────────────────────────────────────────────┤
+│ Informática │ Arquitectura de Computadores                      │
+│ Informática │ Estructura de Datos y Algoritmos I                │
+│ Informática │ Ingeniería del Software                           │
+│ Informática │ Sistemas Inteligentes                             │
+│ Informática │ Sistemas Operativos                               │
+│ Informática │ Bases de Datos                                    │
+│ Informática │ Estructura de Datos y Algoritmos II               │
+│ Informática │ Fundamentos de Redes de Computadores              │
+│ Informática │ Planificación y Gestión de Proyectos Informáticos │
+│ Informática │ Programación de Servicios Software                │
+│ Informática │ Desarrollo de interfaces de usuario               │
+└─────────────┴───────────────────────────────────────────────────┘
 **/
 
 
@@ -332,37 +411,79 @@ select p.nombre, apellido1||' '||apellido2 as apellidos from persona p, profesor
 
 
 -- Devuelve el número total de alumnas que hay.
-
+select count(id) as num_alumnas from persona where tipo = 'alumno' and sexo = 'M';
 /**
-
+┌─────────────┐
+│ num_alumnas │
+├─────────────┤
+│ 3           │
+└─────────────┘
 **/
 
 -- Calcula cuántos alumnos nacieron en 1999.
-
+select count(id) as num_alumnos_1999 from persona where tipo = 'alumno' and fecha_nacimiento regexp '1999';
 /**
-
+┌──────────────────┐
+│ num_alumnos_1999 │
+├──────────────────┤
+│ 2                │
+└──────────────────┘
 **/
 
 -- Calcula cuántos profesores hay en cada departamento. El resultado sólo debe mostrar dos columnas, una con el nombre del departamento y otra con el número de profesores que hay en ese departamento. El resultado sólo debe incluir los departamentos que tienen profesores asociados y deberá estar ordenado de mayor a menor por el número de profesores.
-
+select nombre, count(id_profesor) as num_profesores from departamento dp join profesor pr on dp.id = pr.id_departamento group by dp.id order by count(id_profesor) desc;
 /**
-
+┌────────────────────┬────────────────┐
+│       nombre       │ num_profesores │
+├────────────────────┼────────────────┤
+│ Educación          │ 3              │
+│ Química y Física   │ 2              │
+│ Economía y Empresa │ 2              │
+│ Matemáticas        │ 2              │
+│ Informática        │ 2              │
+│ Agronomía          │ 1              │
+└────────────────────┴────────────────┘
 **/
 
 -- Devuelve un listado con todos los departamentos y el número de profesores que hay en cada uno de ellos. Tenga en cuenta que pueden existir departamentos que no tienen profesores asociados. Estos departamentos también tienen que aparecer en el listado.
-
+select nombre, count(id_profesor) as num_profesores from departamento dp left join profesor pr on dp.id = pr.id_departamento group by dp.id order by count(id_profesor) desc;
 /**
-
+┌─────────────────────┬────────────────┐
+│       nombre        │ num_profesores │
+├─────────────────────┼────────────────┤
+│ Educación           │ 3              │
+│ Informática         │ 2              │
+│ Matemáticas         │ 2              │
+│ Economía y Empresa  │ 2              │
+│ Química y Física    │ 2              │
+│ Agronomía           │ 1              │
+│ Filología           │ 0              │
+│ Derecho             │ 0              │
+│ Biología y Geología │ 0              │
+└─────────────────────┴────────────────┘
 **/
 
 -- Devuelve un listado con el nombre de todos los grados existentes en la base de datos y el número de asignaturas que tiene cada uno. Tenga en cuenta que pueden existir grados que no tienen asignaturas asociadas. Estos grados también tienen que aparecer en el listado. El resultado deberá estar ordenado de mayor a menor por el número de asignaturas.
-
+select g.nombre, count(a.id) as num_asignaturas from grado g left join asignatura a on g.id = a.id_grado group by g.id order by count(a.id) desc;
 /**
-
+┌────────────────────────────────────────────────────────┬─────────────────┐
+│                         nombre                         │ num_asignaturas │
+├────────────────────────────────────────────────────────┼─────────────────┤
+│ Grado en Ingeniería Informática (Plan 2015)            │ 51              │
+│ Grado en Biotecnología (Plan 2015)                     │ 32              │
+│ Grado en Ingeniería Agrícola (Plan 2015)               │ 0               │
+│ Grado en Ingeniería Eléctrica (Plan 2014)              │ 0               │
+│ Grado en Ingeniería Electrónica Industrial (Plan 2010) │ 0               │
+│ Grado en Ingeniería Mecánica (Plan 2010)               │ 0               │
+│ Grado en Ingeniería Química Industrial (Plan 2010)     │ 0               │
+│ Grado en Ciencias Ambientales (Plan 2009)              │ 0               │
+│ Grado en Matemáticas (Plan 2010)                       │ 0               │
+│ Grado en Química (Plan 2009)                           │ 0               │
+└────────────────────────────────────────────────────────┴─────────────────┘
 **/
 
 -- Devuelve un listado con el nombre de todos los grados existentes en la base de datos y el número de asignaturas que tiene cada uno, de los grados que tengan más de 40 asignaturas asociadas.
-
+select g.nombre, count(a.id) as num_asignaturas from grado g left join asignatura a on g.id = a.id_grado where (select count(a.id) from asignatura a left join grado g on a.id_grado = g.id group by g.id) > 40 group by g.id order by count(a.id) desc;
 /**
 
 **/
