@@ -57,6 +57,23 @@ Query OK, 0 rows affected (0,04 sec)
 Records: 0  Duplicates: 0  Warnings: 0
 **/
 
+describe clientes;
+
+/**
++------------+-------------+------+-----+---------+----------------+
+| Field      | Type        | Null | Key | Default | Extra          |
++------------+-------------+------+-----+---------+----------------+
+| documento  | char(8)     | NO   |     | NULL    |                |
+| nombre     | varchar(30) | NO   |     | NULL    |                |
+| domicilio  | varchar(30) | YES  |     | NULL    |                |
+| ciudad     | varchar(20) | YES  |     | NULL    |                |
+| provincia  | varchar(20) | YES  |     | NULL    |                |
+| telefono   | varchar(11) | YES  |     | NULL    |                |
+| id_cliente | int         | NO   | PRI | NULL    | auto_increment |
++------------+-------------+------+-----+---------+----------------+
+7 rows in set (0,02 sec)
+**/
+
 -- Un índice único por el campo "documento" y un índice común por ciudad y provincia. Justifica el tipo de indice en un comentario_. 
 
 CREATE UNIQUE INDEX documento_unique_idx ON clientes (documento); -- Índice único para el campo documento
