@@ -261,6 +261,141 @@ EXPLAIN SELECT * FROM MOVIMIENTO WHERE fecha BETWEEN '01/01/2012' and '01/03/201
 **/
 
 
+/**
+Fijate que en la consulta 2 pedimos todos los campos. ¿A través de que índice busca?
+
+Ninguno.
+
+¿Por qué crees que lo hace así?
+
+Porque la consulta está mal. Las fechas no van entre comillas.
+
+En la consulta 1 solo pedimos la fecha. ¿A través de que índice busca?
+
+Ninguno.
+
+¿Por qué crees que lo hace así?
+
+Porque la consulta está mal. Las fechas no van entre comillas.
+
+Analiza la ejecución.
+
+La primera consulta va más rápida que la segunda porque le pedimos menos cosas.
+
+Si ejecutamos las consultas sin el EXPLAIN, nos dará un Empty set y más de 7000 warnings:
+
+mysql> SELECT fecha FROM MOVIMIENTO WHERE fecha BETWEEN '01/01/2012' and '01/03/2012';
+Empty set, 7092 warnings (0,01 sec)
+
+mysql> SELECT * FROM MOVIMIENTO WHERE Fecha BETWEEN '01/01/2012' and '01/03/2012';
+Empty set, 7092 warnings (0,00 sec)
+
+Si hacemos un SHOW WARNINGS; a continuación justo después de ejecutar las consultas nos enseñará los warnings y saldrá Incorrect date value:
+
+| Warning | 1292 | Incorrect date value: '01/01/2012' for column 'Fecha' at row 1 |
+
+**/
+
+
+-- Vamos a crear un índice por fecha (IX_FECHA) en la tabla MOVIMIENTO, puesto que no lo tenía, en este caso la tabla ya tenía un indice, la clave primaria.
+
+CREATE INDEX IX_FECHA ON MOVIMIENTO (Fecha);
+
+/**
+Query OK, 0 rows affected (0,21 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+**/
+
+-- Visualiza los indices de las tablas MOVIMIENTO y MOVIMIENTO_BIS.
+
+SHOW INDEX FROM MOVIMIENTO;
+
+/**
++------------+------------+----------+--------------+---------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+| Table      | Non_unique | Key_name | Seq_in_index | Column_name   | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment | Visible | Expression |
++------------+------------+----------+--------------+---------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+| MOVIMIENTO |          0 | PRIMARY  |            1 | Identificador | A         |        3546 |     NULL |   NULL |      | BTREE      |         |               | YES     | NULL       |
+| MOVIMIENTO |          1 | IX_FECHA |            1 | Fecha         | A         |         120 |     NULL |   NULL |      | BTREE      |         |               | YES     | NULL       |
++------------+------------+----------+--------------+---------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+2 rows in set (0,01 sec)
+**/
+
+SHOW INDEX FROM MOVIMIENTO_BIS;
+
+/**
++----------------+------------+------------------+--------------+---------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+| Table          | Non_unique | Key_name         | Seq_in_index | Column_name   | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment | Visible | Expression |
++----------------+------------+------------------+--------------+---------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+| MOVIMIENTO_BIS |          0 | IX_IDENTIFICADOR |            1 | Identificador | A         |        3546 |     NULL |   NULL |      | BTREE      |         |               | YES     | NULL       |
+| MOVIMIENTO_BIS |          1 | IX_FECHA_BIS     |            1 | Fecha         | A         |         120 |     NULL |   NULL |      | BTREE      |         |               | YES     | NULL       |
++----------------+------------+------------------+--------------+---------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+2 rows in set (0,01 sec)
+**/
+
+-- Analiza el plan de ejecución de las siguientes consultas y observa la diferencia:
+
+-- Consulta 1:
+
+EXPLAIN SELECT fecha FROM MOVIMIENTO WHERE fecha BETWEEN 01/01/2012 AND 01/03/2012;
+
+/**
++----+-------------+------------+------------+------+---------------+----------+---------+-------+------+----------+-------------+
+| id | select_type | table      | partitions | type | possible_keys | key      | key_len | ref   | rows | filtered | Extra       |
++----+-------------+------------+------------+------+---------------+----------+---------+-------+------+----------+-------------+
+|  1 | SIMPLE      | MOVIMIENTO | NULL       | ref  | IX_FECHA      | IX_FECHA | 3       | const |    1 |   100.00 | Using index |
++----+-------------+------------+------------+------+---------------+----------+---------+-------+------+----------+-------------+
+1 row in set, 1 warning (0,06 sec)
+**/
+
+-- Consulta 2:
+
+EXPLAIN SELECT * FROM MOVIMIENTO WHERE fecha BETWEEN 01/01/2012 AND 01/03/2012;
+
+/**
++----+-------------+------------+------------+------+---------------+----------+---------+-------+------+----------+-------+
+| id | select_type | table      | partitions | type | possible_keys | key      | key_len | ref   | rows | filtered | Extra |
++----+-------------+------------+------------+------+---------------+----------+---------+-------+------+----------+-------+
+|  1 | SIMPLE      | MOVIMIENTO | NULL       | ref  | IX_FECHA      | IX_FECHA | 3       | const |    1 |   100.00 | NULL  |
++----+-------------+------------+------------+------+---------------+----------+---------+-------+------+----------+-------+
+1 row in set, 1 warning (0,00 sec)
+**/
+
+-- Consulta 3:
+
+EXPLAIN SELECT fecha FROM MOVIMIENTO_BIS WHERE fecha BETWEEN 01/01/2012 AND 01/03/2012;
+
+/**
++----+-------------+----------------+------------+------+---------------+--------------+---------+-------+------+----------+-------------+
+| id | select_type | table          | partitions | type | possible_keys | key          | key_len | ref   | rows | filtered | Extra       |
++----+-------------+----------------+------------+------+---------------+--------------+---------+-------+------+----------+-------------+
+|  1 | SIMPLE      | MOVIMIENTO_BIS | NULL       | ref  | IX_FECHA_BIS  | IX_FECHA_BIS | 3       | const |    1 |   100.00 | Using index |
++----+-------------+----------------+------------+------+---------------+--------------+---------+-------+------+----------+-------------+
+**/
+
+-- Consulta 4:
+
+EXPLAIN SELECT * FROM MOVIMIENTO_BIS WHERE fecha BETWEEN 01/01/2012 AND 01/03/2012;
+
+/**
++----+-------------+----------------+------------+------+---------------+--------------+---------+-------+------+----------+-------+
+| id | select_type | table          | partitions | type | possible_keys | key          | key_len | ref   | rows | filtered | Extra |
++----+-------------+----------------+------------+------+---------------+--------------+---------+-------+------+----------+-------+
+|  1 | SIMPLE      | MOVIMIENTO_BIS | NULL       | ref  | IX_FECHA_BIS  | IX_FECHA_BIS | 3       | const |    1 |   100.00 | NULL  |
++----+-------------+----------------+------------+------+---------------+--------------+---------+-------+------+----------+-------+
+1 row in set, 1 warning (0,00 sec)
+
+En todas las consultas se busca a través del índice que creamos para la columna Fecha, es así porque es la manera más directa y rápida para MySQL de encontrar lo que queremos.
+
+En todos los explain tenemos un warning, en el que MySQL nos explica cómo deberíamos realizar la consulta, como por ejemplo:
+
+mysql> SHOW WARNINGS;
++-------+------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Level | Code | Message                                                                                                                                                              |
++-------+------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Note  | 1003 | /* select#1 */ select `Base_Indices`.`MOVIMIENTO`.`Fecha` AS `fecha` from `Base_Indices`.`MOVIMIENTO` where (`Base_Indices`.`MOVIMIENTO`.`Fecha` = DATE'0000-00-00') |
++-------+------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+**/
 
 
 
