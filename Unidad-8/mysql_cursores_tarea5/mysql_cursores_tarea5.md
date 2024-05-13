@@ -194,6 +194,68 @@ Query OK, 0 rows affected (0,01 sec)
   END //
   DELIMITER ;
 
+
+-- Llamada al procedimiento.
+
+CALL eliminar_empleados_por_rango_salario(2000, 2500);
+
+-- Salida:
+
+select * from empleados;
+
+/**
++----+--------+---------+
+| id | nombre | salario |
++----+--------+---------+
+|  1 | Juan   | 3000.00 |
+|  2 | María  | 3500.00 |
+|  3 | Pedro  | 3200.00 |
++----+--------+---------+
+3 rows in set (0,00 sec)
+**/
+
+
+-- Escribe un procedimiento almacenado que aumente el salario de un empleado específico cuyo nombre se pasa como parámetro en un 20%.
+
+  DELIMITER //
+  CREATE PROCEDURE aumentar_salario_empleado(IN input_emp_nombre VARCHAR(100))
+  BEGIN
+      DECLARE done INT DEFAULT FALSE;
+      DECLARE emp_nombre VARCHAR(100);
+      DECLARE emp_salario DECIMAL(10, 2);
+      DECLARE cur CURSOR FOR SELECT nombre, salario FROM empleados;
+      DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+      OPEN cur;
+      read_loop: LOOP
+          FETCH cur INTO emp_nombre, emp_salario;
+          IF done THEN
+              LEAVE read_loop;
+          END IF;
+          UPDATE empleados SET salario = salario * 1.2 WHERE emp_nombre = input_emp_nombre;
+      END LOOP;
+      CLOSE cur;
+  END //
+  DELIMITER ;
+
+-- Llamada al procedimiento:
+
+CALL aumentar_salario_empleado('Juan');
+
+-- Salida:
+
+select * from empleados;
+
+/**
++----+--------+---------+
+| id | nombre | salario |
++----+--------+---------+
+|  1 | Juan   | 3600.00 |
+|  2 | María  | 4200.00 |
+|  3 | Pedro  | 3840.00 |
++----+--------+---------+
+3 rows in set (0,00 sec)
+**/
 ```
 
 </div>
