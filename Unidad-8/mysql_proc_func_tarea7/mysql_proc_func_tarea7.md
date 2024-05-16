@@ -25,26 +25,6 @@ CREATE TABLE IF NOT EXISTS persona (
     Integral DECIMAL(10, 2)
 );
 
--- Crear procedimiento para insertar registros de forma aleatoria
-DELIMITER $$
-CREATE PROCEDURE InsertarRegistrosAleatorios(IN numero_registros INT)
-BEGIN
-    DECLARE contador INT DEFAULT 0;
-    DECLARE salario DECIMAL(10, 2);
-    DECLARE nombre_persona VARCHAR(100);
-    
-    WHILE contador < numero_registros DO
-        SET nombre_persona = CONCAT('Persona_', contador+1);
-        SET salario = ROUND(RAND() * 10000 + 1000, 2);
-        
-        INSERT INTO persona (Identificador, Nombre, Salario_base)
-        VALUES (CONCAT('ID', contador+1), nombre_persona, salario);
-        
-        SET contador = contador + 1;
-    END WHILE;
-END$$
-DELIMITER ;
-
 -- Crear función para calcular el subsidio de transporte
 CREATE FUNCTION subsidio_transporte(identificador VARCHAR(50)) RETURNS DECIMAL(10, 2)
 BEGIN
@@ -89,6 +69,46 @@ BEGIN
     UPDATE persona SET Integral = salario_integral WHERE Identificador = identificador;
     RETURN salario_integral;
 END$$
+
+
+
+-- Crear procedimiento para insertar registros de forma aleatoria
+DELIMITER $$
+
+CREATE PROCEDURE inserciones(IN iterations INT)
+BEGIN
+    DECLARE counter INT DEFAULT 0;
+    DECLARE aux INT DEFAULT 0;
+    DECLARE id_random VARCHAR(100);
+    DECLARE salario INT;
+    DECLARE nombre_random VARCHAR(150);
+    DECLARE subsidio_random DECIMAL;
+    DECLARE salud_random DECIMAL;
+    DECLARE pension_random DECIMAL;
+    DECLARE bono_random DECIMAL;
+    DECLARE integral_random DECIMAL;
+   
+
+    WHILE counter < iterations DO
+        SET id_random = CONCAT(UUID(), '-', -1);
+        SET salario = FLOOR(RAND()* (2000 - 1000 + 1)) + 1000;
+        SET aux = aux + 1;
+        SET nombre_random = CONCAT('Empleado', '-', aux);
+        SELECT subsidio_transporte(id_random) into subsidio_random;
+        SELECT salud(id_random) into salud_random;
+        SELECT pension(id_random) into pension_random;
+        SELECT bono(id_random) into bono_random;
+        SELECT integral(id_random) into integral_random;
+
+        INSERT INTO persona (id, nombre, salario_base, subsidio, salud, pension, bono, integral)
+        VALUES (id_random, nombre_random, salario, subsidio_random, salud_random, pension_random, bono_random, integral_random);
+
+        SET counter = counter + 1;
+        
+    END WHILE;
+END$$
+
+DELIMITER ;
 
 ```
 
