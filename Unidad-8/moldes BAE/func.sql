@@ -1,0 +1,9 @@
+DELIMITER //
+DROP FUNCTION IF EXISTS holaMundo//
+
+CREATE FUNCTION holaMundo(entrada VARCHAR(20)) RETURNS VARCHAR(20)
+BEGIN
+  DECLARE salida VARCHAR(20);
+  SET salida = entrada;
+  RETURN salida;
+END //
